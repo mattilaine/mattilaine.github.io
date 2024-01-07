@@ -14,13 +14,16 @@
         background-image: url('pswd_pg.jpg');
         background-attachment: fixed;
         color: #333;
+
+        /* Full image */
+        background-size: 100%;
     }
 
     .box {
         border-radius: 3px;
-        background: rgba(101, 101, 101, 0.7);
+        background: rgba(65, 186, 197, 0.795);
         margin: auto;
-        padding: 12px;
+        padding: 15px;
     }
 
     .lightbox {
@@ -30,7 +33,8 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(10, 10, 10, 0.8);
+        /* background: rgba(34, 34, 43, 0.419); */
+        background: rgba(76, 76, 123, 0.400);
         text-align: center;
         margin: auto;
 
@@ -50,17 +54,17 @@
     }
 
     ::-webkit-input-placeholder {
-        color: #955;
+        color: rgb(0, 0, 0);
         text-align: center;
     }
 
     ::-moz-placeholder {
-        color: #955;
+        color: rgb(0, 0, 0);
         text-align: center;
     }
 
     :-ms-input-placeholder {
-        color: #955;
+        color: rgb(0, 0, 0);
         text-align: center;
     }
 </style>
@@ -72,9 +76,9 @@
             <div class="vertical">
                 <div class="box">
                     <input style="margin: 16px; text-align: center;" id="password" type="password"
-                        placeholder="password" /> <br />
+                        placeholder="Password :)" /> <br />
                     <button id="loginbutton" type="button">Enter</button>
-                    <p id="wrongPassword" style="display: none">wrong password</p>
+                    <p id="wrongPassword" style="display: none">Wrong passsword</p>
                 </div>
             </div>
         </div>
@@ -112,7 +116,7 @@
                     parent.location.hash = hash;
 
                     //$("#wrongPassword").show();
-                    $("#password").attr("placeholder", "wrong password");
+                    $("#password").attr("placeholder", "Wrong password :(");
                     $("#password").val("");
                 }
             });
