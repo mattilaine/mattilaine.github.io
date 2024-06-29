@@ -12,12 +12,12 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
-            background-image: repeating-radial-gradient(circle, #31319f, #ce39f3 10%);
+            background-image: repeating-radial-gradient(circle, #161619, #464147 10%);
             background-color: #f0f0f0;
             font-family: Arial, sans-serif;
         }
         #game-board {
-            border: 5px solid #6161ce;
+            border: 5px solid #66e09b;
         }
         #score {
             margin-top: 20px;
@@ -34,6 +34,8 @@
     </style>
 </head>
 <body>
+    <img src="kakku.png" id="kakku" width="40" height="40">
+    <button onclick="location.reload()">RESTART</button>
     <canvas id="game-board" width="400" height="400"></canvas>
     <div id="score">Score: 0</div>
 
@@ -122,8 +124,8 @@
         }
 
         function drawFood() {
-            ctx.fillStyle = 'red';
-            ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
+            ctx.font = '20px serif'
+            ctx.fillText('🍰', food.x * gridSize, food.y * gridSize + 20);
         }
 
         function drawSnake() {
