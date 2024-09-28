@@ -30,6 +30,8 @@
 </head>
 <body class="light-mode">
     <button id="toggleButton" style="position: absolute; bottom: 20px; right: 20px;">Switch to Dark Mode</button>
+    <button onclick="window.location.href='index.html'" style="position: absolute; bottom: 20px; left: 20px;">Go to 🐍</button>
+
 
     <script>
         const button = document.getElementById('toggleButton');
@@ -42,12 +44,12 @@
 
     <h1>MiniTube🍿</h1>
     <input type="text" id="videoUrl" placeholder="Enter Youtube video url here">
-    <button onclick="removeNumbers()">Search</button>
+    <button onclick="searchVideo()">Search</button>
     <p id="outputText"></p>
     <iframe width="560" height="315" id="videoFrame" src="https://www.youtube.com/embed/yOL-EJZjmp0"allowfullscreen></iframe>
 
     <script>
-        function removeNumbers() {
+        function searchVideo() {
             const input = document.getElementById('videoUrl').value;
             const regex = /.*\?v=|&pp=.*|.*youtu\.be\//g;
             const output = input.replace(regex, '');            
