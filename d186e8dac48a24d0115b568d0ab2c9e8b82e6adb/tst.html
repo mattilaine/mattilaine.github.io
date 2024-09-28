@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiniTube🍿</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            /* justify-content: center; */
+            align-items: center;
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            animation: fadeIn 3s forwards;
+            transition: background-color 0.9s ease;
+        }
+        .dark-mode {
+            background-color: #2c2b2b;
+            color: #fff;
+        }
+        .light-mode {
+            background-color: #fff;
+            color: #000;
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <button id="toggleButton" style="position: absolute; bottom: 20px; right: 20px;">Switch to Dark Mode</button>
+
+    <script>
+        const button = document.getElementById('toggleButton');
+        button.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            document.body.classList.toggle('light-mode');
+            button.textContent = document.body.classList.contains('dark-mode') ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+        });
+    </script>
+
+    <h1>MiniTube🍿</h1>
+    <input type="text" id="videoUrl" placeholder="Enter Youtube video url here">
+    <button onclick="removeNumbers()">Search</button>
+    <p id="outputText"></p>
+    <iframe width="560" height="315" id="videoFrame" src="https://www.youtube.com/embed/yOL-EJZjmp0"allowfullscreen></iframe>
+
+    <script>
+        function removeNumbers() {
+            const input = document.getElementById('videoUrl').value;
+            const regex = /.*\?v=|&pp=.*|.*youtu\.be\//g;
+            const output = input.replace(regex, '');            
+            const fullUrl = "https://www.youtube.com/embed/" + output;
+            document.getElementById('videoFrame').src = fullUrl;
+            // document.getElementById('outputText').innerText = fullUrl;
+        }
+    </script>
+</body>
+</html>
