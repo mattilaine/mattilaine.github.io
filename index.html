@@ -10,76 +10,98 @@
 
 <style>
     body {
-
         background-image: url('pswd_pg.jpg');
         background-attachment: fixed;
         color: #000000;
-
-        /* Full image */
         background-size: 100%;
     }
 
-    .box {
-        border-radius: 3px;
-        background: rgba(65, 186, 197, 0.795);
-        margin: auto;
-        padding: 15px;
-    }
-
     .lightbox {
-        zoom: 1.5;
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
         background: rgba(76, 76, 123, 0.400);
-        text-align: center;
-        margin: auto;
-
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    div.horizontal {
+    .input-container {
         display: flex;
-        justify-content: center;
-        height: 100%;
+        background: white;
+        border-radius: 1rem;
+        background: linear-gradient(135deg, #23272F 0%, #14161a 100%);
+        box-shadow: 10px 10px 20px #0e1013, -10px -10px 40px #383e4b;
+        padding: 0.3rem;
+        gap: 0.3rem;
+        width: 320px;
     }
 
-    div.vertical {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+    .input-container input {
+        border-radius: 0.8rem 0 0 0.8rem;
+        background: #23272F;
+        box-shadow: inset 5px 5px 10px #0e1013, inset -5px -5px 10px #383e4b, 0px 0px 100px rgba(255, 212, 59, 0), 0px 0px 100px rgba(255, 102, 0, 0);
         width: 100%;
+        flex-basis: 75%;
+        padding: 1rem;
+        border: none;
+        border: 1px solid transparent;
+        color: white;
+        transition: all 0.2s ease-in-out;
     }
 
-    ::-webkit-input-placeholder {
-        color: rgb(0, 0, 0);
-        text-align: center;
+    .input-container input:focus {
+        border: 1px solid #3b9aff;
+        outline: none;
+        box-shadow: inset 0px 0px 10px rgba(66, 110, 243, 0.5), inset 0px 0px 10px rgba(59, 121, 255, 0.5), 0px 0px 100px rgba(59, 213, 255, 0.5), 0px 0px 100px rgba(0, 174, 255, 0.5);
     }
 
-    ::-moz-placeholder {
-        color: rgb(0, 0, 0);
-        text-align: center;
+    .input-container button {
+        flex-basis: 25%;
+        padding: 1rem;
+        background: linear-gradient(135deg, rgba(221, 114, 233, 0.59) 0%, rgba(230, 0, 255, 0.59) 100%);
+        box-shadow: 0px 0px 1px rgba(66, 110, 243, 0.5), 0px 0px 1px rgba(230, 0, 255, 0.5);
+        font-weight: 900;
+        letter-spacing: 0.3rem;
+        text-transform: uppercase;
+        color: #23272F;
+        border: none;
+        width: 100%;
+        border-radius: 0 1rem 1rem 0;
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
     }
 
-    :-ms-input-placeholder {
-        color: rgb(0, 0, 0);
-        text-align: center;
+    .input-container button:hover {
+        background: linear-gradient(135deg, rgb(66, 110, 243) 50%, rgb(66, 110, 243) 100%);
+        box-shadow: 0px 0px 100px rgba(66, 110, 243, 0.5), 0px 0px 100px rgba(230, 0, 255, 0.5);
+    }
+
+    @media (max-width: 500px) {
+        .input-container {
+            flex-direction: column;
+            width: 90vw;
+        }
+
+        .input-container input {
+            border-radius: 0.8rem;
+        }
+
+        .input-container button {
+            padding: 1rem;
+            border-radius: 0.8rem;
+        }
     }
 </style>
 
 <body>
 
     <div id="loginbox" class="lightbox">
-        <div class="horizontal">
-            <div class="vertical">
-                <div class="box">
-                    <input style="margin: 16px; text-align: center;" id="password" type="password"
-                        placeholder="password 🔒" /> <br />
-                    <button id="loginbutton" type="button">Enter</button>
-                    <p id="wrongPassword" style="display: none">Wrong passsword</p>
-                </div>
-            </div>
+        <div class="input-container">
+            <input id="password" type="password" placeholder="Password...">
+            <button id="loginbutton" class="button">Enter</button>
         </div>
     </div>
 
@@ -87,52 +109,39 @@
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
 
-
     <script type="text/javascript"
         src="https://rawcdn.githack.com/chrisveness/crypto/7067ee62f18c76dd4a9d372a00e647205460b62b/sha1.js"></script>
 
     <script type="text/javascript">
         "use strict";
 
-
         function loadPage(pwd) {
-
-            var hash = pwd;
-            hash = Sha1.hash(pwd);
+            var hash = Sha1.hash(pwd);
             var url = hash + "/index.html";
 
             $.ajax({
                 url: url,
                 dataType: "html",
                 success: function (data) {
-
                     window.location = url;
-
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
-
-
                     parent.location.hash = hash;
-
-                    //$("#wrongPassword").show();
                     $("#password").attr("placeholder", "wrong password 😔");
                     $("#password").val("");
                 }
             });
         }
 
-
         $("#loginbutton").on("click", function () {
             loadPage($("#password").val());
         });
         $("#password").keypress(function (e) {
             if (e.which == 13) {
-
                 loadPage($("#password").val());
             }
         });
         $("#password").focus();
-
     </script>
 
 </body>

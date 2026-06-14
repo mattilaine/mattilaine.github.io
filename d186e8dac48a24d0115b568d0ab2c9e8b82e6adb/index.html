@@ -1,192 +1,375 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML>
+<!--
+	Originally inspired by HTML5 UP (html5up.net | @ajlkn)
+-->
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake Game</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background-image: repeating-radial-gradient(circle, #161619, #464147 10%);
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
-        }
-        #game-board {
-            border: 5px solid #66e09b;
-        }
-        #score {
-            margin-top: 20px;
-            font-size: 24px;
-            color: #49e95e;
-        }
-        .sparkle {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            pointer-events: none;
-        }
-    </style>
+	<title>@mattilaine</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<!-- Preconnect to Google Fonts -->
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<!-- FontAwesome (was @import in main.css) -->
+	<link rel="stylesheet" href="assets/css/fontawesome-all.min.css" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<!-- Raleway font (was @import in main.css) -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,400;0,700;0,800;1,400&display=swap" />
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,400;0,700;0,800;1,400&display=swap" />
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap" />
+	<script defer src="assets/js/jquery.min.js"></script>
+	<script defer src="assets/js/jquery.scrollex.min.js"></script>
+	<script defer src="assets/js/jquery.scrolly.min.js"></script>
+	<script defer src="assets/js/browser.min.js"></script>
+	<script defer src="assets/js/breakpoints.min.js"></script>
+	<script defer src="assets/js/util.js"></script>
+	<script defer src="assets/js/main.js"></script>
+	<script defer src="assets/js/typing.js"></script>
+	<script defer src="assets/js/konami.js"></script>
+	<style>
+		:root {
+			--cosmic-size: 120px;
+			--cosmic-font-size: 4rem;
+		}
+
+		.name {
+			position: relative;
+			display: flex;
+			justify-content: center;
+		}
+
+		.name .cosmic {
+			position: relative;
+			cursor: pointer;
+			height: var(--cosmic-size);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.name .cosmic span {
+			font-size: var(--cosmic-font-size);
+			font-weight: 700;
+			font-family: "Poppins", sans-serif;
+			-webkit-text-stroke: 2px var(--color);
+			color: transparent;
+			transition: 0.5s;
+		}
+
+		.name .cosmic:hover span {
+			opacity: 0;
+		}
+
+		.name .cosmic::before {
+			content: attr(data-text);
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			font-size: var(--cosmic-font-size);
+			font-family: "Poppins", sans-serif;
+			height: 0;
+			font-weight: 700;
+			overflow: hidden;
+			transition: 0.6s ease-in-out;
+			text-align: center;
+			line-height: var(--cosmic-size);
+			color: var(--color);
+		}
+
+		.name .cosmic:hover::before {
+			height: 100%;
+			filter: drop-shadow(0 0 2rem var(--color));
+		}
+
+		.name .cosmic::after {
+			content: attr(data-label);
+			position: absolute;
+			bottom: 100%;
+			left: 50%;
+			transform: translateX(-50%) translateY(6px);
+			font-size: 0.85rem;
+			font-family: "Poppins", sans-serif;
+			font-weight: 500;
+			color: var(--color);
+			letter-spacing: 0.08em;
+			opacity: 0;
+			transition: opacity 0.3s ease, transform 0.3s ease;
+			white-space: nowrap;
+			pointer-events: none;
+		}
+
+		.name .cosmic:hover::after {
+			opacity: 1;
+			transform: translateX(-50%) translateY(0);
+		}
+
+		#header .major h1 {
+			border-right: 3px solid rgba(255, 255, 255, 0.75);
+			animation: cursor-blink 0.7s step-end infinite;
+			white-space: nowrap;
+			overflow: hidden;
+			display: inline-block;
+		}
+
+		#header .major h1.typed {
+			border-right-color: transparent;
+			animation: text-glow 3s ease-in-out infinite;
+		}
+
+		@keyframes cursor-blink {
+			50% {
+				border-right-color: transparent;
+			}
+		}
+
+		@keyframes text-glow {
+
+			0%,
+			100% {
+				text-shadow:
+					0 0 4px rgba(255, 255, 255, 0.08),
+					0 0 10px rgba(255, 255, 255, 0.06),
+					0 0 20px rgba(255, 255, 255, 0.04);
+			}
+
+			50% {
+				text-shadow:
+					0 0 4px rgba(255, 255, 255, 0.35),
+					0 0 10px rgba(255, 255, 255, 0.25),
+					0 0 20px rgba(255, 255, 255, 0.18),
+					0 0 40px rgba(255, 255, 255, 0.10),
+					0 0 70px rgba(255, 255, 255, 0.05);
+			}
+		}
+
+		ul.icons-grid li {
+			perspective: 1000px;
+			padding: 0;
+			height: 190px;
+			box-shadow: none !important;
+		}
+
+		ul.icons-grid li:nth-child(2n + 3):before {
+			display: none !important;
+		}
+
+		ul.icons-grid .flip-card-inner {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			transition: transform 0.6s ease;
+			transform-style: preserve-3d;
+		}
+
+		ul.icons-grid li:hover .flip-card-inner {
+			transform: rotateY(180deg);
+		}
+
+		ul.icons-grid .flip-card-front,
+		ul.icons-grid .flip-card-back {
+			position: absolute;
+			inset: 0;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			backface-visibility: hidden;
+			-webkit-backface-visibility: hidden;
+		}
+
+		ul.icons-grid .flip-card-front {
+			transform: rotateY(0deg);
+			-webkit-transform: rotateY(0deg);
+			background-color: inherit;
+		}
+
+		ul.icons-grid .flip-card-back {
+			transform: rotateY(180deg);
+			/* background-color: #3d4449; */
+			color: #ababab;
+			padding: 1.5em;
+			text-align: center;
+		}
+
+		ul.icons-grid .flip-card-back p {
+			font-size: 0.95em;
+			line-height: 1.6;
+			margin: 0;
+		}
+	</style>
 </head>
-<body>
-    <img src="kakku.png" id="kakku" width="40" height="40">
-    <button onclick="location.reload()">RESTART</button>
-    <canvas id="game-board" width="400" height="400"></canvas>
-    <div id="score">Score: 0</div>
-    <button onclick="window.location.href='minitube.html'" style="position: absolute; bottom: 20px; left: 20px;">Go to 📺🍿</button>
-    
-    <script>
-        const canvas = document.getElementById('game-board');
-        const ctx = canvas.getContext('2d');
-        const scoreElement = document.getElementById('score');
 
-        const gridSize = 20;
-        const tileCount = canvas.width / gridSize;
-        let snake = [
-            {x: 10, y: 10},
-        ];
-        let food = getRandomFoodPosition();
-        let dx = 0;
-        let dy = 0;
-        let score = 0;
+<body class="is-preload">
 
-        document.addEventListener('keydown', changeDirection);
+	<!-- Header -->
+	<section id="header">
+		<header class="major">
+			<div class="name">
+				<div class="cosmic" style="--color: #23b1d8" data-text="@" data-label="Cloud">
+					<span>@</span>
+				</div>
+				<div class="cosmic" style="--color: #dc5fe2" data-text="matti" data-label="Data">
+					<span>matti</span>
+				</div>
+				<div class="cosmic" style="--color: #b733f9" data-text="laine" data-label="Engineering">
+					<span>laine</span>
+				</div>
+			</div>
+			<!-- <p>Cloud + Data + Engineering</p> -->
+		</header>
+		<div class="container">
+			<ul class="actions special">
+					<li><a href="#one" class="button primary scrolly">Hello</a></li>
+			</ul>
+		</div>
+	</section>
 
-        function changeDirection(event) {
-            const LEFT_KEY = 37;
-            const RIGHT_KEY = 39;
-            const UP_KEY = 38;
-            const DOWN_KEY = 40;
+	<!-- One -->
+	<section id="one" class="main special">
+		<div class="container">
+			<span class="image fit primary">
+				<picture>
+					<source srcset="images/pic01.webp" type="image/webp" />
+					<img src="images/pic01.jpg" alt="" loading="lazy" />
+				</picture>
+			</span>
+			<div class="content">
+				<header class="major">
+					<h2>Hey There</h2>
+				</header>
+				<p>I'm Matti Laine, an experienced data and platform engineer with an analytical, business-oriented mindset. <br><br>
+				I have built and delivered data platforms and data-driven solutions for several clients, for example in the energy,
+				finance, and retail sectors. I'm passionate about exploring new technologies and approaches with AI, with a focus on
+				fueling value creation through data.<br>
 
-            const keyPressed = event.keyCode;
-            const goingUp = dy === -1;
-            const goingDown = dy === 1;
-            const goingRight = dx === 1;
-            const goingLeft = dx === -1;
+				I currently work as Principal Data Engineer at <a href="https://www.renessai.com" style="text-decoration: none; border-bottom: none;">Renessai</a>.</p>
+			</div>
+			<a href="#two" class="goto-next scrolly">Next</a>
+		</div>
+	</section>
 
-            if (keyPressed === LEFT_KEY && !goingRight) {
-                dx = -1;
-                dy = 0;
-            }
-            if (keyPressed === UP_KEY && !goingDown) {
-                dx = 0;
-                dy = -1;
-            }
-            if (keyPressed === RIGHT_KEY && !goingLeft) {
-                dx = 1;
-                dy = 0;
-            }
-            if (keyPressed === DOWN_KEY && !goingUp) {
-                dx = 0;
-                dy = 1;
-            }
-        }
+	<!-- Two -->
+	<section id="two" class="main special">
+		<div class="container">
+			<span class="image fit primary">
+				<picture>
+					<source srcset="images/pic02.webp" type="image/webp" />
+					<img src="images/pic02.jpg" alt="" loading="lazy" />
+				</picture>
+			</span>
+			<div class="content">
+				<header class="major">
+					<h2>Stuff I like to do</h2>
+				</header>
+				<p>I like to work from architecture and design to infrastructure and implementation,
+				but data and platform engineering are the things that bind it all together.
+				I'm aiming for a holistic view to find the intersection of scalability, reliability, and maintainability <br>
+				— by embracing simplicity over complexity.
+				</p>
+				<ul class="icons-grid">
+					<li>
+						<div class="flip-card-inner">
+							<div class="flip-card-front">
+								<!-- <span class="icon solid major fa-drafting-compass"></span> -->
+								<h3>Architecture and Design</h3>
+							</div>
+							<div class="flip-card-back">
+								<p>Translating complex requirements into clean, scalable technical
+									architectures.</p>
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="flip-card-inner">
+							<div class="flip-card-front">
+								<!-- <span class="icon solid major fa-cloud"></span> -->
+								<h3>Cloud and Data Platforms</h3>
+							</div>
+							<div class="flip-card-back">
+								<p>Building cloud infrastructure for data & AI platforms, and data-intensive applications.</p>
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="flip-card-inner">
+							<div class="flip-card-front">
+								<!-- <span class="icon solid major fa-code"></span> -->
+								<h3>Data Pipelines and Storage</h3>
+							</div>
+							<div class="flip-card-back">
+								<p>Designing and operating data pipelines (batch and stream) that move and transform data reliably at scale.
+								</p>
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="flip-card-inner">
+							<div class="flip-card-front">
+								<!-- <span class="icon solid major fa-cloud"></span> -->
+								
+								<h3> Governance and Management</h3>
+							</div>
+							<div class="flip-card-back">
+								<p>Defining ownership, quality, lineage and discoverability through the data lifecycle.
+								</p>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<a href="#three" class="goto-next scrolly">Next</a>
+		</div>
+	</section>
 
-        function getRandomFoodPosition() {
-            return {
-                x: Math.floor(Math.random() * tileCount),
-                y: Math.floor(Math.random() * tileCount)
-            }
-        }
+	<!-- Three -->
+	<section id="three" class="main special">
+		<div class="container">
+			<span class="image fit primary">
+				<picture>
+					<source srcset="images/pic03.webp" type="image/webp" />
+					<img src="images/pic03.jpg" alt="" loading="lazy" />
+				</picture>
+			</span>
+			<div class="content">
+				<header class="major">
+					<h2>Coffee time?</h2>
+				</header>
+				<p> I'm also a fan of quality coffee and espresso based beverages.
+					I'm currently brewing with <a href="https://www.lelit.com/product/marax-pl62x/" target="_blank" style="text-decoration: none; border-bottom: none;">Lelit MaraX</a>, and chasing the perfect
+					shot of espresso ☕️</p>
+			</div>
+			<a href="#footer" class="goto-next scrolly">Next</a>
+		</div>
+	</section>
 
-        function gameLoop() {
-            if (hasGameEnded()) return;
+	<!-- Footer -->
+	<section id="footer">
+		<div class="container">
+			<header class="major">
+				<h2>Get in touch</h2>
+			</header>
+			<p>Want to connect or collaborate? <br>
+			Hit the button below and come say hi on my GitHub. <br><br>
+			For professional inquiries, find me on <a href="https://fi.linkedin.com/in/mattilaine" target="_blank" style="text-decoration: none; border-bottom: none;">LinkedIn</a>.</p>
+			<ul class="actions special">
+				<li>
+					<div class="glow-wrap"><a href="https://github.com/mattilaine/mattilaine.github.io/discussions/5" target="_blank" class="button primary">Send Message</a></div>
+				</li>
+			</ul>
+		</div>
+		<footer>
+			<ul class="icons">
+				<li><a href="https://github.com/mattilaine" class="icon brands alt fa-github"><span class="label">Github</span></a></li>
+				<li><a href="https://fi.linkedin.com/in/mattilaine" class="icon brands alt fa-linkedin"><span class="label">Linkedin</span></a></li>
+			</ul>
+		</footer>
+	</section>
 
-            setTimeout(() => {
-                clearCanvas();
-                moveSnake();
-                drawFood();
-                drawSnake();
-                gameLoop();
-            }, 100)
-        }
 
-        function clearCanvas() {
-            ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
-
-        function moveSnake() {
-            const head = {x: snake[0].x + dx, y: snake[0].y + dy};
-            snake.unshift(head);
-
-            if (head.x === food.x && head.y === food.y) {
-                score++;
-                scoreElement.innerHTML = `Score: ${score}`;
-                food = getRandomFoodPosition();
-            } else {
-                snake.pop();
-            }
-        }
-
-        function drawFood() {
-            ctx.font = '20px serif'
-            ctx.fillText('🍰', food.x * gridSize, food.y * gridSize + 20);
-        }
-
-        function drawSnake() {
-            ctx.fillStyle = 'green';
-            snake.forEach(segment => {
-                ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
-            });
-        }
-
-        function hasGameEnded() {
-            const head = snake[0];
-            if (head.x < 0 || head.x >= tileCount ||
-                head.y < 0 || head.y >= tileCount ||
-                snake.slice(1).some(segment => segment.x === head.x && segment.y === head.y)) {
-                createSparkles();
-                return true;
-            }
-            return false;
-        }
-
-        function createSparkles() {
-            for (let i = 0; i < 100; i++) {
-                const sparkle = document.createElement('div');
-                sparkle.className = 'sparkle';
-                document.body.appendChild(sparkle);
-
-                const size = Math.random() * 20 + 5;
-                sparkle.style.width = `${size}px`;
-                sparkle.style.height = `${size}px`;
-                sparkle.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-
-                const startX = window.innerWidth / 2;
-                const startY = window.innerHeight / 2;
-                const angle = Math.random() * Math.PI * 2;
-                const velocity = Math.random() * 10 + 5;
-
-                let x = startX;
-                let y = startY;
-
-                function animateSparkle() {
-                    x += Math.cos(angle) * velocity;
-                    y += Math.sin(angle) * velocity;
-                    
-                    sparkle.style.left = `${x}px`;
-                    sparkle.style.top = `${y}px`;
-                    sparkle.style.opacity = sparkle.style.opacity || 1;
-                    sparkle.style.opacity -= 0.02;
-
-                    if (sparkle.style.opacity > 0) {
-                        requestAnimationFrame(animateSparkle);
-                    } else {
-                        sparkle.remove();
-                    }
-                }
-
-                animateSparkle();
-            }
-        }
-
-        gameLoop();
-    </script>
 </body>
+
 </html>

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TETRIS</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0a0a0f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    canvas {
+      display: block;
+      box-shadow: 0 0 30px rgba(0,255,247,0.15), 0 0 60px rgba(0,255,247,0.07);
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.04) 3px
+      );
+      pointer-events: none;
+      z-index: 10;
+    }
+    #wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    #title {
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      letter-spacing: 4px;
+      color: #00fff7;
+      text-shadow: 0 0 10px #00fff7, 0 0 20px #00fff750;
+    }
+    #back-link {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 1.5rem;
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: rgba(0,255,247,0.3);
+      text-decoration: none;
+      border: 1px solid rgba(0,255,247,0.15);
+      padding: 0.35rem 0.8rem;
+      transition: color 0.2s, border-color 0.2s;
+      z-index: 20;
+    }
+    #back-link:hover {
+      color: #00fff7;
+      border-color: rgba(0,255,247,0.5);
+    }
+  </style>
+</head>
+<body>
+  <div id="wrap">
+    <a id="back-link" href="../index.html?gaming=1">← GAMING CENTER</a>
+    <div id="title">// TETRIS</div>
+    <canvas id="game" width="460" height="600"></canvas>
+  </div>
+  <script>
+  (function () {
+  // ── Constants ────────────────────────────────────────────────
+  const COLS = 10, ROWS = 20, CELL = 30;
+  const BOARD_W = COLS * CELL;   // 300
+  const HUD_W   = 160;
+  const W       = BOARD_W + HUD_W; // 460
+  const H       = ROWS * CELL;     // 600
+
+  const COLORS = [
+    null,
+    '#00fff7', // 1 I  cyan
+    '#f5d800', // 2 O  yellow
+    '#bf5af2', // 3 T  purple
+    '#30d158', // 4 S  green
+    '#ff453a', // 5 Z  red
+    '#0a84ff', // 6 J  blue
+    '#ff9f0a', // 7 L  orange
+  ];
+
+  // ── Tetrominoes ──────────────────────────────────────────────
+  // Each piece: 4 rotations × array of [row, col] offsets in a 4×4 box
+  const PIECES = [
+    // 1: I
+    [[[1,0],[1,1],[1,2],[1,3]],[[0,2],[1,2],[2,2],[3,2]],[[2,0],[2,1],[2,2],[2,3]],[[0,1],[1,1],[2,1],[3,1]]],
+    // 2: O
+    [[[0,1],[0,2],[1,1],[1,2]],[[0,1],[0,2],[1,1],[1,2]],[[0,1],[0,2],[1,1],[1,2]],[[0,1],[0,2],[1,1],[1,2]]],
+    // 3: T
+    [[[0,1],[1,0],[1,1],[1,2]],[[0,1],[1,1],[1,2],[2,1]],[[1,0],[1,1],[1,2],[2,1]],[[0,1],[1,0],[1,1],[2,1]]],
+    // 4: S
+    [[[0,1],[0,2],[1,0],[1,1]],[[0,1],[1,1],[1,2],[2,2]],[[1,1],[1,2],[2,0],[2,1]],[[0,0],[1,0],[1,1],[2,1]]],
+    // 5: Z
+    [[[0,0],[0,1],[1,1],[1,2]],[[0,2],[1,1],[1,2],[2,1]],[[1,0],[1,1],[2,1],[2,2]],[[0,1],[1,0],[1,1],[2,0]]],
+    // 6: J
+    [[[0,0],[1,0],[1,1],[1,2]],[[0,1],[0,2],[1,1],[2,1]],[[1,0],[1,1],[1,2],[2,2]],[[0,1],[1,1],[2,0],[2,1]]],
+    // 7: L
+    [[[0,2],[1,0],[1,1],[1,2]],[[0,1],[1,1],[2,1],[2,2]],[[1,0],[1,1],[1,2],[2,0]],[[0,0],[0,1],[1,1],[2,1]]],
+  ];
+
+  // SRS wall-kick offsets for J/L/S/T/Z: [from_rotation] → [[dr,dc], ...]
+  const KICKS = [
+    [[ 0, 0],[ 0,-1],[ 1,-1],[-2, 0],[-2,-1]],
+    [[ 0, 0],[ 0, 1],[-1, 1],[ 2, 0],[ 2, 1]],
+    [[ 0, 0],[ 0, 1],[ 1, 1],[-2, 0],[-2, 1]],
+    [[ 0, 0],[ 0,-1],[-1,-1],[ 2, 0],[ 2,-1]],
+  ];
+  // SRS wall-kick offsets for I piece
+  const KICKS_I = [
+    [[ 0, 0],[ 0,-2],[ 0, 1],[ 1,-2],[-2, 1]],
+    [[ 0, 0],[ 0,-1],[ 0, 2],[-2,-1],[ 1, 2]],
+    [[ 0, 0],[ 0, 2],[ 0,-1],[-1, 2],[ 2,-1]],
+    [[ 0, 0],[ 0, 1],[ 0,-2],[ 2, 1],[-1,-2]],
+  ];
+
+  // ── State ────────────────────────────────────────────────────
+  function createState() {
+    return {
+      board:      Array.from({ length: ROWS }, () => new Array(COLS).fill(0)),
+      piece:      null,  // { type:1-7, rotation:0-3, row, col }
+      next:       null,
+      score:      0,
+      level:      1,
+      lines:      0,
+      status:     'playing', // 'playing' | 'paused' | 'gameover'
+      flashRows:  [],
+      flashTimer: 0,
+    };
+  }
+
+  function randomPiece() {
+    return { type: Math.floor(Math.random() * 7) + 1, rotation: 0, row: 0, col: 3 };
+  }
+
+  function getCells(piece) {
+    return PIECES[piece.type - 1][piece.rotation].map(([r, c]) => [
+      piece.row + r, piece.col + c,
+    ]);
+  }
+
+  function isValid(board, piece) {
+    return getCells(piece).every(([r, c]) =>
+      r >= 0 && r < ROWS && c >= 0 && c < COLS && board[r][c] === 0
+    );
+  }
+
+  function tryRotate(state, dir) {
+    const p       = state.piece;
+    const nextRot = (p.rotation + (dir === 1 ? 1 : 3)) % 4;
+    const cand    = { ...p, rotation: nextRot };
+    const kicks   = p.type === 1 ? KICKS_I : KICKS;
+    const set     = kicks[p.rotation];
+
+    for (const [dr, dc] of set) {
+      const kicked = { ...cand, row: cand.row + dr, col: cand.col + dc };
+      if (isValid(state.board, kicked)) {
+        state.piece = kicked;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function gravityMs(level) {
+    return Math.max(50, 800 - (level - 1) * 83);
+  }
+
+  function clearLines(state) {
+    const full = [];
+    for (let r = 0; r < ROWS; r++) {
+      if (state.board[r].every(v => v !== 0)) full.push(r);
+    }
+    if (!full.length) return;
+
+    state.flashRows  = full;
+    state.flashTimer = 10; // frames — rows removed after flash expires
+  }
+
+  function applyLineClear(state) {
+    const full = state.flashRows;
+    full.slice().reverse().forEach(r => {
+      state.board.splice(r, 1);
+      state.board.unshift(new Array(COLS).fill(0));
+    });
+    const pts    = [0, 100, 300, 500, 800];
+    state.score += (pts[full.length] || 800) * state.level;
+    state.lines += full.length;
+    state.level  = Math.floor(state.lines / 10) + 1;
+    state.flashRows  = [];
+    state.flashTimer = 0;
+  }
+
+  function lockPiece(state) {
+    getCells(state.piece).forEach(([r, c]) => {
+      state.board[r][c] = state.piece.type;
+    });
+    state.piece = null; // null while flash plays
+    clearLines(state);
+    if (!state.flashRows.length) spawnNext(state);
+  }
+
+  function spawnNext(state) {
+    state.piece = state.next;
+    state.next  = randomPiece();
+    if (!isValid(state.board, state.piece)) state.status = 'gameover';
+  }
+
+  // ── Canvas ───────────────────────────────────────────────────
+  const canvas = document.getElementById('game');
+  const ctx    = canvas.getContext('2d');
+
+  // Pre-render static grid to offscreen canvas
+  const gridCanvas = document.createElement('canvas');
+  gridCanvas.width  = BOARD_W;
+  gridCanvas.height = H;
+  const gCtx = gridCanvas.getContext('2d');
+  gCtx.strokeStyle = 'rgba(0,255,247,0.05)';
+  gCtx.lineWidth   = 0.5;
+  for (let c = 1; c < COLS; c++) {
+    gCtx.beginPath(); gCtx.moveTo(c * CELL, 0); gCtx.lineTo(c * CELL, H); gCtx.stroke();
+  }
+  for (let r = 1; r < ROWS; r++) {
+    gCtx.beginPath(); gCtx.moveTo(0, r * CELL); gCtx.lineTo(BOARD_W, r * CELL); gCtx.stroke();
+  }
+
+  // ── Renderer ─────────────────────────────────────────────────
+  function drawCell(x, y, color, alpha) {
+    ctx.save();
+    ctx.globalAlpha  = alpha !== undefined ? alpha : 1;
+    ctx.shadowBlur   = 5;
+    ctx.shadowColor  = color;
+    ctx.fillStyle    = color;
+    ctx.fillRect(x + 1, y + 1, CELL - 2, CELL - 2);
+    // inner top highlight
+    ctx.shadowBlur  = 0;
+    ctx.fillStyle   = 'rgba(255,255,255,0.15)';
+    ctx.fillRect(x + 2, y + 2, CELL - 4, 3);
+    ctx.restore();
+  }
+
+  function drawCellsBatched(cellList, color) {
+    ctx.save();
+    ctx.shadowBlur  = 5;
+    ctx.shadowColor = color;
+    ctx.fillStyle   = color;
+    // Draw all filled rects in one pass
+    cellList.forEach(function(pos) {
+      ctx.fillRect(pos[0] + 1, pos[1] + 1, CELL - 2, CELL - 2);
+    });
+    // Draw highlights in a second pass (no shadow needed)
+    ctx.shadowBlur = 0;
+    ctx.fillStyle  = 'rgba(255,255,255,0.15)';
+    cellList.forEach(function(pos) {
+      ctx.fillRect(pos[0] + 2, pos[1] + 2, CELL - 4, 3);
+    });
+    ctx.restore();
+  }
+
+  function drawBoard(state) {
+    ctx.fillStyle = '#05050f';
+    ctx.fillRect(0, 0, BOARD_W, H);
+
+    // grid lines (pre-rendered offscreen)
+    ctx.drawImage(gridCanvas, 0, 0);
+
+    // board border glow
+    ctx.save();
+    ctx.strokeStyle = '#00fff7';
+    ctx.shadowBlur  = 4;
+    ctx.shadowColor = '#00fff7';
+    ctx.lineWidth   = 1;
+    ctx.strokeRect(0.5, 0.5, BOARD_W - 1, H - 1);
+    ctx.restore();
+
+    // placed cells (batched by color to reduce shadow state changes)
+    const colorGroups = {};
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        const v = state.board[r][c];
+        if (v) {
+          const color = COLORS[v];
+          if (!colorGroups[color]) colorGroups[color] = [];
+          colorGroups[color].push([c * CELL, r * CELL]);
+        }
+      }
+    }
+    Object.keys(colorGroups).forEach(function(color) {
+      drawCellsBatched(colorGroups[color], color);
+    });
+
+    // active piece
+    if (state.piece) {
+      getCells(state.piece).forEach(([r, c]) =>
+        drawCell(c * CELL, r * CELL, COLORS[state.piece.type])
+      );
+    }
+
+    // Flash effect on clearing rows
+    if (state.flashRows.length && state.flashTimer > 0) {
+      ctx.save();
+      ctx.globalAlpha = (state.flashTimer / 10) * 0.85;
+      ctx.fillStyle   = '#ffffff';
+      state.flashRows.forEach(r => ctx.fillRect(1, r * CELL + 1, BOARD_W - 2, CELL - 2));
+      ctx.restore();
+    }
+  }
+
+  function drawHUD(state) {
+    const x  = BOARD_W;
+    const lx = x + 20;
+
+    ctx.fillStyle = '#05050f';
+    ctx.fillRect(x, 0, HUD_W, H);
+
+    function label(text, tx, ty) {
+      ctx.font      = '13px "Courier New", monospace';
+      ctx.fillStyle = 'rgba(0,255,247,0.45)';
+      ctx.shadowBlur = 0;
+      ctx.fillText(text, tx, ty);
+    }
+
+    function value(text, tx, ty, color) {
+      color = color || '#00fff7';
+      ctx.save();
+      ctx.font       = 'bold 24px "Courier New", monospace';
+      ctx.fillStyle  = color;
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = color;
+      ctx.fillText(text, tx, ty);
+      ctx.restore();
+    }
+
+    label('SCORE', lx, 52);
+    value(String(state.score).padStart(6, '0'), lx, 78);
+
+    label('LEVEL', lx, 120);
+    value(String(state.level).padStart(2, '0'), lx, 146, '#ff00c8');
+
+    label('LINES', lx, 188);
+    value(String(state.lines).padStart(3, '0'), lx, 214);
+
+    // Next piece box
+    label('NEXT', lx, 258);
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,0,200,0.35)';
+    ctx.lineWidth   = 1;
+    ctx.strokeRect(lx, 270, 100, 90);
+    ctx.restore();
+
+    if (state.next) {
+      const cells  = PIECES[state.next.type - 1][0];
+      const color  = COLORS[state.next.type];
+      const cs     = 18;
+      cells.forEach(([r, c]) => {
+        ctx.save();
+        ctx.shadowBlur  = 4;
+        ctx.shadowColor = color;
+        ctx.fillStyle   = color;
+        ctx.fillRect(lx + 12 + c * cs, 278 + r * cs, cs - 2, cs - 2);
+        ctx.restore();
+      });
+    }
+
+    // Controls hint
+    ctx.font      = '11px "Courier New", monospace';
+    ctx.fillStyle = 'rgba(0,255,247,0.55)';
+    ['← → MOVE', '↑ Z ROTATE', '↓ SOFT DROP', 'SPC HARD', 'P PAUSE'].forEach((h, i) => {
+      ctx.fillText(h, lx, H - 100 + i * 16);
+    });
+  }
+
+  function drawOverlay(text, subtext, color) {
+    ctx.save();
+    ctx.fillStyle = 'rgba(0,0,0,0.62)';
+    ctx.fillRect(0, 0, BOARD_W, H);
+    ctx.textAlign   = 'center';
+    ctx.font        = 'bold 26px "Courier New", monospace';
+    ctx.fillStyle   = color;
+    ctx.shadowBlur  = 18;
+    ctx.shadowColor = color;
+    ctx.fillText(text, BOARD_W / 2, H / 2 - 18);
+    ctx.font       = '12px "Courier New", monospace';
+    ctx.shadowBlur = 6;
+    ctx.fillText(subtext, BOARD_W / 2, H / 2 + 18);
+    ctx.restore();
+  }
+
+  function render(state) {
+    ctx.clearRect(0, 0, W, H);
+    drawBoard(state);
+    drawHUD(state);
+    if (state.status === 'paused')   drawOverlay('PAUSED',    'PRESS P TO RESUME', '#00fff7');
+    if (state.status === 'gameover') drawOverlay('GAME OVER', 'PRESS R TO RESTART', '#ff00c8');
+  }
+
+  function startGame() {
+    const s   = createState();
+    s.piece   = randomPiece();
+    s.next    = randomPiece();
+    Object.assign(state, s);
+    lastTick = performance.now();
+  }
+
+  // ── Engine ───────────────────────────────────────────────────
+  let lastTick = 0;
+  let animId   = null;
+
+  function loop(now) {
+    animId = requestAnimationFrame(loop);
+
+    if (state.status === 'playing') {
+      // Tick flash animation
+      if (state.flashTimer > 0) {
+        state.flashTimer--;
+        if (state.flashTimer === 0) {
+          applyLineClear(state);
+          spawnNext(state);
+        }
+        render(state);
+        return;
+      }
+
+      if (!state.piece) { render(state); return; }
+
+      if (now - lastTick >= gravityMs(state.level)) {
+        lastTick = now;
+        const moved = { ...state.piece, row: state.piece.row + 1 };
+        if (isValid(state.board, moved)) {
+          state.piece = moved;
+        } else {
+          lockPiece(state);
+        }
+      }
+    }
+
+    render(state);
+  }
+
+  // ── Input ────────────────────────────────────────────────────
+  document.addEventListener('keydown', e => {
+    if (e.code === 'KeyR' && state.status === 'gameover') {
+      startGame();
+      return;
+    }
+    if (e.code === 'KeyP' && state.status !== 'gameover') {
+      if (state.status === 'paused') {
+        state.status = 'playing';
+        lastTick = performance.now();
+      } else {
+        state.status = 'paused';
+      }
+      return;
+    }
+    if (!state || state.status !== 'playing' || !state.piece) return;
+    const p = state.piece;
+    switch (e.code) {
+      case 'ArrowLeft': {
+        const m = { ...p, col: p.col - 1 };
+        if (isValid(state.board, m)) { state.piece = m; render(state); }
+        break;
+      }
+      case 'ArrowRight': {
+        const m = { ...p, col: p.col + 1 };
+        if (isValid(state.board, m)) { state.piece = m; render(state); }
+        break;
+      }
+      case 'ArrowUp':
+        tryRotate(state, 1);
+        render(state);
+        break;
+      case 'KeyZ':
+        tryRotate(state, -1);
+        render(state);
+        break;
+      case 'ArrowDown': {
+        const m = { ...state.piece, row: state.piece.row + 1 };
+        if (isValid(state.board, m)) {
+          state.piece = m;
+          state.score += 1;
+          lastTick = performance.now();
+        } else {
+          lockPiece(state);
+        }
+        break;
+      }
+      case 'Space': {
+        e.preventDefault();
+        let dropped = 0;
+        while (true) {
+          const m = { ...state.piece, row: state.piece.row + 1 };
+          if (isValid(state.board, m)) { state.piece = m; dropped++; }
+          else break;
+        }
+        state.score += dropped * 2;
+        lockPiece(state);
+        lastTick = performance.now();
+        break;
+      }
+    }
+    e.preventDefault();
+  });
+
+  let state    = createState();
+  state.piece  = randomPiece();
+  state.next   = randomPiece();
+  lastTick = performance.now();
+  requestAnimationFrame(loop);
+  })();
+  </script>
+</body>
+</html>
