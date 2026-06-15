@@ -1,147 +1,217 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
 
 <head>
-    <title></title>
-
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Enter password</title>
+    <link rel="icon" href="data:,">
 
-</head>
+    <style>
+        :root {
+            --panel: #23272F;
+            --panel-dark: #14161a;
+        }
 
-<style>
-    body {
-        background-image: url('pswd_pg.jpg');
-        background-attachment: fixed;
-        color: #000000;
-        background-size: 100%;
-    }
+        * {
+            box-sizing: border-box;
+        }
 
-    .lightbox {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(76, 76, 123, 0.400);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url('pswd_pg.jpg'); /* fallback for browsers without image-set() */
+            background-image: image-set(
+                url('pswd_pg.webp') type('image/webp'),
+                url('pswd_pg.jpg') type('image/jpeg')
+            );
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            color: #000;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        }
 
-    .input-container {
-        display: flex;
-        background: white;
-        border-radius: 1rem;
-        background: linear-gradient(135deg, #23272F 0%, #14161a 100%);
-        box-shadow: 10px 10px 20px #0e1013, -10px -10px 40px #383e4b;
-        padding: 0.3rem;
-        gap: 0.3rem;
-        width: 320px;
-    }
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(76, 76, 123, 0.4);
+        }
 
-    .input-container input {
-        border-radius: 0.8rem 0 0 0.8rem;
-        background: #23272F;
-        box-shadow: inset 5px 5px 10px #0e1013, inset -5px -5px 10px #383e4b, 0px 0px 100px rgba(255, 212, 59, 0), 0px 0px 100px rgba(255, 102, 0, 0);
-        width: 100%;
-        flex-basis: 75%;
-        padding: 1rem;
-        border: none;
-        border: 1px solid transparent;
-        color: white;
-        transition: all 0.2s ease-in-out;
-    }
-
-    .input-container input:focus {
-        border: 1px solid #3b9aff;
-        outline: none;
-        box-shadow: inset 0px 0px 10px rgba(66, 110, 243, 0.5), inset 0px 0px 10px rgba(59, 121, 255, 0.5), 0px 0px 100px rgba(59, 213, 255, 0.5), 0px 0px 100px rgba(0, 174, 255, 0.5);
-    }
-
-    .input-container button {
-        flex-basis: 25%;
-        padding: 1rem;
-        background: linear-gradient(135deg, rgba(221, 114, 233, 0.59) 0%, rgba(230, 0, 255, 0.59) 100%);
-        box-shadow: 0px 0px 1px rgba(66, 110, 243, 0.5), 0px 0px 1px rgba(230, 0, 255, 0.5);
-        font-weight: 900;
-        letter-spacing: 0.3rem;
-        text-transform: uppercase;
-        color: #23272F;
-        border: none;
-        width: 100%;
-        border-radius: 0 1rem 1rem 0;
-        transition: all 0.2s ease-in-out;
-        cursor: pointer;
-    }
-
-    .input-container button:hover {
-        background: linear-gradient(135deg, rgb(66, 110, 243) 50%, rgb(66, 110, 243) 100%);
-        box-shadow: 0px 0px 100px rgba(66, 110, 243, 0.5), 0px 0px 100px rgba(230, 0, 255, 0.5);
-    }
-
-    @media (max-width: 500px) {
         .input-container {
-            flex-direction: column;
-            width: 90vw;
+            display: flex;
+            border-radius: 1rem;
+            background: linear-gradient(135deg, var(--panel) 0%, var(--panel-dark) 100%);
+            box-shadow: 10px 10px 20px #0e1013, -10px -10px 40px #383e4b;
+            padding: 0.3rem;
+            gap: 0.3rem;
+            width: 320px;
         }
 
         .input-container input {
-            border-radius: 0.8rem;
+            border-radius: 0.8rem 0 0 0.8rem;
+            background: var(--panel);
+            box-shadow: inset 5px 5px 10px #0e1013, inset -5px -5px 10px #383e4b;
+            width: 100%;
+            flex-basis: 75%;
+            padding: 1rem;
+            border: 1px solid transparent;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .input-container input:focus {
+            border: 1px solid #3b9aff;
+            outline: none;
+            box-shadow: inset 0px 0px 10px rgba(66, 110, 243, 0.5),
+                0px 0px 100px rgba(59, 213, 255, 0.5);
         }
 
         .input-container button {
+            flex-basis: 25%;
             padding: 1rem;
-            border-radius: 0.8rem;
+            background: linear-gradient(135deg, rgba(221, 114, 233, 0.59) 0%, rgba(230, 0, 255, 0.59) 100%);
+            box-shadow: 0px 0px 1px rgba(66, 110, 243, 0.5), 0px 0px 1px rgba(230, 0, 255, 0.5);
+            font-weight: 900;
+            letter-spacing: 0.3rem;
+            text-transform: uppercase;
+            color: var(--panel);
+            border: none;
+            width: 100%;
+            border-radius: 0 1rem 1rem 0;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
         }
-    }
-</style>
+
+        .input-container button:hover:not(:disabled) {
+            background: linear-gradient(135deg, rgb(66, 110, 243) 50%, rgb(66, 110, 243) 100%);
+            box-shadow: 0px 0px 100px rgba(66, 110, 243, 0.5), 0px 0px 100px rgba(230, 0, 255, 0.5);
+        }
+
+        .input-container button:disabled {
+            cursor: progress;
+            opacity: 0.7;
+        }
+
+        /* Shake on wrong password */
+        .input-container.shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .input-container.shake { animation: none; }
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        @media (max-width: 500px) {
+            .input-container {
+                flex-direction: column;
+                width: 90vw;
+            }
+
+            .input-container input,
+            .input-container button {
+                border-radius: 0.8rem;
+            }
+        }
+    </style>
+</head>
 
 <body>
 
     <div id="loginbox" class="lightbox">
-        <div class="input-container">
-            <input id="password" type="password" placeholder="Password...">
-            <button id="loginbutton" class="button">Enter</button>
-        </div>
+        <form id="loginform" class="input-container" autocomplete="on">
+            <label class="visually-hidden" for="password">Password</label>
+            <input id="password" name="password" type="password" placeholder="Password..."
+                autocomplete="current-password" aria-describedby="status">
+            <button id="loginbutton" type="submit">Enter</button>
+            <span id="status" class="visually-hidden" aria-live="polite"></span>
+        </form>
     </div>
 
-
-
-    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
-
-    <script type="text/javascript"
-        src="https://rawcdn.githack.com/chrisveness/crypto/7067ee62f18c76dd4a9d372a00e647205460b62b/sha1.js"></script>
-
-    <script type="text/javascript">
+    <script>
         "use strict";
 
-        function loadPage(pwd) {
-            var hash = Sha1.hash(pwd);
-            var url = hash + "/index.html";
+        const form = document.getElementById("loginform");
+        const container = form;
+        const input = document.getElementById("password");
+        const button = document.getElementById("loginbutton");
+        const status = document.getElementById("status");
 
-            $.ajax({
-                url: url,
-                dataType: "html",
-                success: function (data) {
-                    window.location = url;
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    parent.location.hash = hash;
-                    $("#password").attr("placeholder", "wrong password 😔");
-                    $("#password").val("");
-                }
-            });
+        // SHA-1 hex digest via the built-in Web Crypto API (HTTPS only).
+        // Kept as SHA-1 to match the existing {hash}/index.html directory names.
+        async function sha1Hex(message) {
+            const bytes = new TextEncoder().encode(message);
+            const buffer = await crypto.subtle.digest("SHA-1", bytes);
+            return Array.from(new Uint8Array(buffer))
+                .map(b => b.toString(16).padStart(2, "0"))
+                .join("");
         }
 
-        $("#loginbutton").on("click", function () {
-            loadPage($("#password").val());
-        });
-        $("#password").keypress(function (e) {
-            if (e.which == 13) {
-                loadPage($("#password").val());
+        function setBusy(busy) {
+            button.disabled = busy;
+            button.textContent = busy ? "…" : "Enter";
+        }
+
+        function reject() {
+            setBusy(false);
+            input.value = "";
+            input.setAttribute("placeholder", "wrong password 😔");
+            status.textContent = "Wrong password";
+            container.classList.remove("shake");
+            void container.offsetWidth; // restart animation
+            container.classList.add("shake");
+            input.focus();
+        }
+
+        async function loadPage(pwd) {
+            if (!pwd) return;
+            setBusy(true);
+            status.textContent = "Checking…";
+            try {
+                const hash = await sha1Hex(pwd);
+                const url = hash + "/index.html";
+                const res = await fetch(url, { method: "GET" });
+                if (res.ok) {
+                    window.location = url;
+                } else {
+                    reject();
+                }
+            } catch (err) {
+                reject();
             }
+        }
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            loadPage(input.value);
         });
-        $("#password").focus();
+
+        input.focus();
     </script>
 
 </body>
