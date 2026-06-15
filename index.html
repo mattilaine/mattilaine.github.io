@@ -10,13 +10,15 @@
 
     <style>
         :root {
-            --panel: #23272F;
-            --panel-dark: #14161a;
+            --bg-color: #0d0d0d;
+            --primary-color: #00f2ea;
+            --secondary-color: #a855f7;
+            --text-color: #e5e5e5;
+            --font-family: "Fira Code", Consolas, "Courier New", Courier, monospace;
+            --glitch-anim-duration: 0.4s;
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
@@ -24,7 +26,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-image: url('pswd_pg.jpg'); /* fallback for browsers without image-set() */
+            background-image: url('pswd_pg.jpg');
             background-image: image-set(
                 url('pswd_pg.webp') type('image/webp'),
                 url('pswd_pg.jpg') type('image/jpeg')
@@ -32,8 +34,7 @@
             background-attachment: fixed;
             background-size: cover;
             background-position: center;
-            color: #000;
-            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            font-family: var(--font-family);
         }
 
         .lightbox {
@@ -45,75 +46,189 @@
             background: rgba(76, 76, 123, 0.4);
         }
 
-        .input-container {
+        #loginform {
             display: flex;
-            border-radius: 1rem;
-            background: linear-gradient(135deg, var(--panel) 0%, var(--panel-dark) 100%);
-            box-shadow: 10px 10px 20px #0e1013, -10px -10px 40px #383e4b;
-            padding: 0.3rem;
-            gap: 0.3rem;
-            width: 320px;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .input-container input {
-            border-radius: 0.8rem 0 0 0.8rem;
-            background: var(--panel);
-            box-shadow: inset 5px 5px 10px #0e1013, inset -5px -5px 10px #383e4b;
+        /* --- Glitch Input Wrapper --- */
+        .glitch-input-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: var(--font-family);
+            font-size: 16px;
+            padding: 3rem 3rem 1.5rem;
+        }
+
+        .input-container {
+            position: relative;
+            width: 19rem;
+        }
+
+        .holo-input {
             width: 100%;
-            flex-basis: 75%;
-            padding: 1rem;
-            border: 1px solid transparent;
-            color: white;
-            font-size: 1rem;
-            transition: all 0.2s ease-in-out;
-        }
-
-        .input-container input:focus {
-            border: 1px solid #3b9aff;
+            height: 3.5rem;
+            background: rgba(13, 13, 13, 0.7);
+            border: none;
+            border-bottom: 2px solid #333;
             outline: none;
-            box-shadow: inset 0px 0px 10px rgba(66, 110, 243, 0.5),
-                0px 0px 100px rgba(59, 213, 255, 0.5);
+            padding: 0 1rem;
+            color: var(--primary-color);
+            font-family: inherit;
+            font-size: 1.1rem;
+            caret-color: var(--primary-color);
+            z-index: 10;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
-        .input-container button {
-            flex-basis: 25%;
-            padding: 1rem;
-            background: linear-gradient(135deg, rgba(221, 114, 233, 0.59) 0%, rgba(230, 0, 255, 0.59) 100%);
-            box-shadow: 0px 0px 1px rgba(66, 110, 243, 0.5), 0px 0px 1px rgba(230, 0, 255, 0.5);
-            font-weight: 900;
+        .input-label {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            color: var(--text-color);
+            opacity: 0.6;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 11;
+        }
+        .holo-input:focus + .input-label,
+        .holo-input:not(:placeholder-shown) + .input-label {
+            top: -1.5rem;
+            left: 0;
+            font-size: 0.8rem;
+            opacity: 1;
+            color: var(--primary-color);
+        }
+        .holo-input:focus + .input-label::before,
+        .holo-input:focus + .input-label::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #212121;
+        }
+        .holo-input:focus + .input-label::before {
+            color: var(--secondary-color);
+            animation: glitch-label var(--glitch-anim-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+        .holo-input:focus + .input-label::after {
+            color: var(--primary-color);
+            animation: glitch-label var(--glitch-anim-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both;
+        }
+
+        .input-border,
+        .input-scanline,
+        .input-glow,
+        .input-corners {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .input-border {
+            border: 1px solid rgba(0, 242, 234, 0.2);
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+        .corner {
+            position: absolute;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid var(--primary-color);
+            transition: all 0.3s ease;
+            opacity: 0.5;
+        }
+        .corner-tl { top: -0.3rem; left: -0.3rem; border-right: none; border-bottom: none; }
+        .corner-tr { top: -0.3rem; right: -0.3rem; border-left: none; border-bottom: none; }
+        .corner-bl { bottom: -0.3rem; left: -0.3rem; border-right: none; border-top: none; }
+        .corner-br { bottom: -0.3rem; right: -0.3rem; border-left: none; border-top: none; }
+
+        .input-glow {
+            background: radial-gradient(ellipse at center, rgba(0, 242, 234, 0.2) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .input-scanline {
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                transparent 0%,
+                rgba(0, 242, 234, 0.1) 48%,
+                rgba(0, 242, 234, 0.3) 50%,
+                rgba(0, 242, 234, 0.1) 52%,
+                transparent 100%
+            );
+            opacity: 0;
+        }
+
+        .input-data-stream {
+            position: absolute;
+            bottom: 2px;
+            left: 0;
+            width: 100%;
+            height: 0.3rem;
+            display: flex;
+            opacity: 0;
+            transition: opacity 0.3s ease 0.1s;
+        }
+        .stream-bar {
+            flex-grow: 1;
+            background-color: var(--primary-color);
+            transition: transform 0.2s, opacity 0.2s;
+            transform: scaleY(0);
+            transform-origin: bottom;
+        }
+
+        .holo-input:focus { border-color: transparent; }
+        .holo-input:focus ~ .input-border { opacity: 1; border-color: rgba(0, 242, 234, 0.5); }
+        .holo-input:focus ~ .input-corners .corner { width: 1.25rem; height: 1.25rem; border-width: 3px; opacity: 1; }
+        .holo-input:focus ~ .input-glow { opacity: 1; }
+        .holo-input:focus ~ .input-scanline { animation: scan-vertical 4s linear infinite; }
+        .holo-input:focus ~ .input-data-stream { opacity: 1; }
+        .holo-input:focus ~ .input-data-stream .stream-bar {
+            animation: data-pulse 2s infinite;
+            animation-delay: calc(var(--i) * 0.1s);
+        }
+
+        /* --- Enter Button --- */
+        .login-button {
+            width: 19rem;
+            padding: 0.85rem;
+            background: transparent;
+            border: 1px solid rgba(0, 242, 234, 0.4);
+            color: var(--primary-color);
+            font-family: var(--font-family);
+            font-size: 0.95rem;
+            font-weight: 700;
             letter-spacing: 0.3rem;
             text-transform: uppercase;
-            color: var(--panel);
-            border: none;
-            width: 100%;
-            border-radius: 0 1rem 1rem 0;
-            transition: all 0.2s ease-in-out;
             cursor: pointer;
+            transition: all 0.3s ease;
+            clip-path: polygon(0.5rem 0%, 100% 0%, calc(100% - 0.5rem) 100%, 0% 100%);
         }
-
-        .input-container button:hover:not(:disabled) {
-            background: linear-gradient(135deg, rgb(66, 110, 243) 50%, rgb(66, 110, 243) 100%);
-            box-shadow: 0px 0px 100px rgba(66, 110, 243, 0.5), 0px 0px 100px rgba(230, 0, 255, 0.5);
+        .login-button:hover:not(:disabled) {
+            background: rgba(0, 242, 234, 0.1);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 20px rgba(0, 242, 234, 0.3), inset 0 0 20px rgba(0, 242, 234, 0.05);
         }
-
-        .input-container button:disabled {
+        .login-button:disabled {
             cursor: progress;
-            opacity: 0.7;
+            opacity: 0.5;
         }
 
-        /* Shake on wrong password */
-        .input-container.shake {
-            animation: shake 0.4s ease-in-out;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-8px); }
-            40%, 80% { transform: translateX(8px); }
-        }
+        /* --- Shake on wrong password --- */
+        #loginform.shake { animation: shake 0.4s ease-in-out; }
 
         @media (prefers-reduced-motion: reduce) {
-            .input-container.shake { animation: none; }
+            #loginform.shake { animation: none; }
         }
 
         .visually-hidden {
@@ -128,15 +243,37 @@
         }
 
         @media (max-width: 500px) {
-            .input-container {
-                flex-direction: column;
-                width: 90vw;
-            }
+            .glitch-input-wrapper { padding: 2rem 1rem 1.5rem; }
+            .input-container { width: calc(90vw - 2rem); }
+            .login-button { width: 90vw; }
+        }
 
-            .input-container input,
-            .input-container button {
-                border-radius: 0.8rem;
-            }
+        /* --- Keyframes --- */
+        @keyframes glitch-label {
+            0%   { transform: translate(0); clip-path: inset(0 0 0 0); }
+            20%  { transform: translate(-0.2rem, 0.1rem); clip-path: inset(50% 0 20% 0); }
+            40%  { transform: translate(0.1rem, -0.1rem); clip-path: inset(20% 0 60% 0); }
+            60%  { transform: translate(-0.15rem, 0.1rem); clip-path: inset(80% 0 5% 0); }
+            80%  { transform: translate(0.15rem, -0.15rem); clip-path: inset(30% 0 45% 0); }
+            100% { transform: translate(0); clip-path: inset(0 0 0 0); }
+        }
+
+        @keyframes scan-vertical {
+            0%   { opacity: 0; transform: translateY(-100%); }
+            25%  { opacity: 0.5; }
+            75%  { opacity: 0.5; }
+            100% { opacity: 0; transform: translateY(100%); }
+        }
+
+        @keyframes data-pulse {
+            0%, 100% { transform: scaleY(0.2); opacity: 0.3; }
+            50%       { transform: scaleY(1); opacity: 0.8; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
         }
     </style>
 </head>
@@ -144,11 +281,36 @@
 <body>
 
     <div id="loginbox" class="lightbox">
-        <form id="loginform" class="input-container" autocomplete="on">
-            <label class="visually-hidden" for="password">Password</label>
-            <input id="password" name="password" type="password" placeholder="Password..."
-                autocomplete="current-password" aria-describedby="status">
-            <button id="loginbutton" type="submit">Enter</button>
+        <form id="loginform" autocomplete="on">
+            <div class="glitch-input-wrapper">
+                <div class="input-container">
+                    <input type="password" id="password" name="password" class="holo-input"
+                        placeholder="" autocomplete="current-password" aria-describedby="status" required>
+                    <label for="password" class="input-label" data-text="Password">Password</label>
+                    <div class="input-border"></div>
+                    <div class="input-scanline"></div>
+                    <div class="input-glow"></div>
+                    <div class="input-data-stream">
+                        <div class="stream-bar" style="--i: 0;"></div>
+                        <div class="stream-bar" style="--i: 1;"></div>
+                        <div class="stream-bar" style="--i: 2;"></div>
+                        <div class="stream-bar" style="--i: 3;"></div>
+                        <div class="stream-bar" style="--i: 4;"></div>
+                        <div class="stream-bar" style="--i: 5;"></div>
+                        <div class="stream-bar" style="--i: 6;"></div>
+                        <div class="stream-bar" style="--i: 7;"></div>
+                        <div class="stream-bar" style="--i: 8;"></div>
+                        <div class="stream-bar" style="--i: 9;"></div>
+                    </div>
+                    <div class="input-corners">
+                        <div class="corner corner-tl"></div>
+                        <div class="corner corner-tr"></div>
+                        <div class="corner corner-bl"></div>
+                        <div class="corner corner-br"></div>
+                    </div>
+                </div>
+            </div>
+            <button id="loginbutton" class="login-button" type="submit">Enter</button>
             <span id="status" class="visually-hidden" aria-live="polite"></span>
         </form>
     </div>
@@ -157,13 +319,10 @@
         "use strict";
 
         const form = document.getElementById("loginform");
-        const container = form;
         const input = document.getElementById("password");
         const button = document.getElementById("loginbutton");
         const status = document.getElementById("status");
 
-        // SHA-1 hex digest via the built-in Web Crypto API (HTTPS only).
-        // Kept as SHA-1 to match the existing {hash}/index.html directory names.
         async function sha1Hex(message) {
             const bytes = new TextEncoder().encode(message);
             const buffer = await crypto.subtle.digest("SHA-1", bytes);
@@ -180,11 +339,11 @@
         function reject() {
             setBusy(false);
             input.value = "";
-            input.setAttribute("placeholder", "wrong password 😔");
+            input.setAttribute("placeholder", "wrong password 🌚");
             status.textContent = "Wrong password";
-            container.classList.remove("shake");
-            void container.offsetWidth; // restart animation
-            container.classList.add("shake");
+            form.classList.remove("shake");
+            void form.offsetWidth;
+            form.classList.add("shake");
             input.focus();
         }
 
@@ -205,6 +364,12 @@
                 reject();
             }
         }
+
+        input.addEventListener("blur", function () {
+            if (!input.value) {
+                input.setAttribute("placeholder", "");
+            }
+        });
 
         form.addEventListener("submit", function (e) {
             e.preventDefault();
