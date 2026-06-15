@@ -216,7 +216,7 @@
 			border: none;
 			box-shadow: none;
 			gap: 0.75rem;
-			color: #ffffff;
+			color: #7e7e7e !important;
 			background-color: rgb(24, 23, 23);
 			cursor: pointer;
 			transition: all 0.6s ease;
@@ -226,39 +226,37 @@
 		.button.x svg {
 			height: 24px;
 			width: 24px;
-			fill: #fff;
+			fill: #7e7e7e;
 			margin-right: 0.5rem;
+		}
+
+		.glow-wrap::before {
+			opacity: 0 !important;
+			transition: opacity 0.3s ease-in-out;
+		}
+
+		.glow-wrap:hover::before {
+			opacity: 0.8 !important;
 		}
 
 		.button.x:hover {
 			transform: scale(1.02);
 			background-color: #333;
-			box-shadow:
-				0 0 18px rgba(255, 0, 255, 0.5),
-				0 0 40px rgba(0, 255, 255, 0.2);
-			color: #ff00ff;
+			box-shadow: none;
+			color: #ffffff;
 		}
 
 		.button.x:hover svg {
-			fill: #ff00ff;
+			fill: #ffffff;
 		}
 
 		.button.x:focus {
 			outline: none;
-			box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
 		}
 
 		.button.x:active {
 			transform: scale(0.98);
-			box-shadow:
-				0 0 18px rgba(0, 255, 255, 0.6),
-				0 0 50px rgba(191, 0, 255, 0.35);
-			color: #00ffff;
 			opacity: 0.9;
-		}
-
-		.button.x:active svg {
-			fill: #00ffff;
 		}
 
 		@media (max-width: 480px) {
@@ -423,8 +421,9 @@
 			For professional inquiries, find me on <a href="https://fi.linkedin.com/in/mattilaine" target="_blank" style="text-decoration: none; border-bottom: none;">LinkedIn</a>.</p>
 			<ul class="actions special">
 				<li>
+					<div class="glow-wrap">
 					<a href="https://github.com/mattilaine/mattilaine.github.io/discussions/5" target="_blank" class="button x">
-						<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#ffffff">
+						<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#7e7e7e">
 							<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
 							<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
 							<g id="SVGRepo_iconCarrier">
@@ -435,6 +434,7 @@
 						</svg>
 						Say hi on GitHub
 					</a>
+					</div>
 				</li>
 			</ul>
 		</div>
