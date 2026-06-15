@@ -217,7 +217,7 @@
 			box-shadow: none;
 			gap: 0.75rem;
 			color: #7e7e7e !important;
-			background-color: rgb(24, 23, 23);
+			background-color: rgb(39, 39, 39);
 			cursor: pointer;
 			transition: all 0.6s ease;
 			text-decoration: none;
@@ -241,7 +241,7 @@
 
 		.button.x:hover {
 			transform: scale(1.02);
-			background-color: #333;
+			background-color: #1d1c1c;
 			box-shadow: none;
 			color: #ffffff;
 		}
@@ -263,6 +263,17 @@
 			.button.x {
 				max-width: 100%;
 			}
+		}
+
+		.reveal-header {
+			opacity: 0;
+			transform: translateY(24px);
+			transition: opacity 0.7s ease, transform 0.7s ease;
+		}
+
+		.reveal-header.visible {
+			opacity: 1;
+			transform: translateY(0);
 		}
 	</style>
 </head>
@@ -303,7 +314,7 @@
 			</span>
 			<div class="content">
 				<header class="major">
-					<h2>Hey There</h2>
+					<h2 class="reveal-header">Hey There</h2>
 				</header>
 				<p>I'm Matti Laine, an experienced data and platform engineer with an analytical, business-oriented mindset. <br><br>
 				I have built and delivered data platforms and data-driven solutions for several clients, for example in the energy,
@@ -327,7 +338,7 @@
 			</span>
 			<div class="content">
 				<header class="major">
-					<h2>Stuff I like to do</h2>
+					<h2 class="reveal-header">Stuff I like to do</h2>
 				</header>
 				<p>I like to work from architecture and design to infrastructure and implementation,
 				but data and platform engineering are the things that bind it all together.
@@ -400,7 +411,7 @@
 			</span>
 			<div class="content">
 				<header class="major">
-					<h2>Coffee time?</h2>
+					<h2 class="reveal-header">Coffee time?</h2>
 				</header>
 				<p> I'm also a fan of quality coffee and espresso based beverages.
 					I'm currently brewing with <a href="https://www.lelit.com/product/marax-pl62x/" target="_blank" style="text-decoration: none; border-bottom: none;">Lelit MaraX</a>, and chasing the perfect
@@ -414,7 +425,7 @@
 	<section id="footer">
 		<div class="container">
 			<header class="major">
-				<h2>Get in touch</h2>
+				<h2 class="reveal-header">Get in touch</h2>
 			</header>
 			<p>Want to connect or collaborate? <br>
 			Hit the button below and come say hi on my GitHub. <br><br>
@@ -447,6 +458,18 @@
 	</section>
 
 
+	<script>
+		const observer = new IntersectionObserver((entries) => {
+			entries.forEach(entry => {
+				if (entry.isIntersecting) {
+					entry.target.classList.add('visible');
+					observer.unobserve(entry.target);
+				}
+			});
+		}, { threshold: 0.2 });
+
+		document.querySelectorAll('.reveal-header').forEach(el => observer.observe(el));
+	</script>
 </body>
 
 </html>
