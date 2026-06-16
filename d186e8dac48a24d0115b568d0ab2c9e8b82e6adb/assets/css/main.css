@@ -112,7 +112,7 @@ input, select, textarea {
 		}
 
 	body, input, select, textarea {
-		/* color: #6f7577; */
+		/* color: #7e7e7e; */
 		color: #7e7e7e;
 		font-family: "Raleway", "Helvetica", sans-serif;
 		font-size: 15pt;
@@ -127,7 +127,7 @@ input, select, textarea {
 		transition: color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
 		border-bottom: dotted 1px;
 		/* color: #8cd1a8; */
-		color: #798192;
+		color: #5eafaf;
 		text-decoration: none;
 	}
 
@@ -151,8 +151,8 @@ input, select, textarea {
 	}
 
 	h1, h2, h3, h4, h5, h6 {
-		/* color: #61686b; */
-		color: #7e7e7e;
+		/* color: #7e7e7e; */
+		color:#7e7e7e;
 		font-weight: 800;
 		letter-spacing: 0.075em;
 		line-height: 1em;
