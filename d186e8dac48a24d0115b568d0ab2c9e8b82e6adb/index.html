@@ -20,6 +20,8 @@
 		href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,400;0,700;0,800;1,400&display=swap" />
 	<link rel="stylesheet"
 		href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap" />
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" />
 	<script defer src="assets/js/jquery.min.js"></script>
 	<script defer src="assets/js/jquery.scrollex.min.js"></script>
 	<script defer src="assets/js/jquery.scrolly.min.js"></script>
@@ -200,6 +202,99 @@
 			line-height: 1.6;
 			margin: 0;
 		}
+
+		.button.x {
+			max-width: 320px;
+			display: flex;
+			padding: 0.5rem 1.4rem;
+			font-size: 0.875rem;
+			line-height: 1.25rem;
+			font-weight: 700;
+			text-align: center;
+			text-transform: uppercase;
+			vertical-align: middle;
+			align-items: center;
+			border-radius: 0.5rem;
+			border: none;
+			box-shadow: none;
+			gap: 0.75rem;
+			color: #7e7e7e !important;
+			background-color: rgb(39, 39, 39);
+			cursor: pointer;
+			transition: all 0.6s ease;
+			text-decoration: none;
+		}
+
+		.button.x svg {
+			height: 24px;
+			width: 24px;
+			fill: #7e7e7e;
+			margin-right: 0.5rem;
+		}
+
+		.glow-wrap::before {
+			opacity: 0 !important;
+			transition: opacity 0.3s ease-in-out;
+		}
+
+		.glow-wrap:hover::before {
+			opacity: 0.8 !important;
+		}
+
+		.button.x:hover {
+			transform: scale(1.02);
+			background-color: #1d1c1c;
+			box-shadow: none;
+			color: #ffffff;
+		}
+
+		.button.x:hover svg {
+			fill: #ffffff;
+		}
+
+		.button.x:focus {
+			outline: none;
+		}
+
+		.button.x:active {
+			transform: scale(0.98);
+			opacity: 0.9;
+		}
+
+		@media (max-width: 480px) {
+			.button.x {
+				max-width: 100%;
+			}
+		}
+
+		.main.special .content header.major h2 {
+			font-family: "Handjet", sans-serif;
+		}
+
+		ul.icons-grid .flip-card-front h3 {
+			font-family: "Handjet", sans-serif;
+		}
+
+		#footer header.major h2 {
+			font-family: "Handjet", sans-serif;
+		}
+
+		.reveal-header,
+		.reveal-text {
+			opacity: 0;
+			transform: translateY(24px);
+			transition: opacity 0.7s ease, transform 0.7s ease;
+		}
+
+		.reveal-text {
+			transition-delay: 0.1s;
+		}
+
+		.reveal-header.visible,
+		.reveal-text.visible {
+			opacity: 1;
+			transform: translateY(0);
+		}
 	</style>
 </head>
 
@@ -239,12 +334,11 @@
 			</span>
 			<div class="content">
 				<header class="major">
-					<h2>Hey There</h2>
+					<h2 class="reveal-header">Hey There</h2>
 				</header>
-				<p>I'm Matti Laine, an experienced data and platform engineer with an analytical, business-oriented mindset. <br><br>
-				I have built and delivered data platforms and data-driven solutions for several clients, for example in the energy,
-				finance, and retail sectors. I'm passionate about exploring new technologies and approaches with AI, with a focus on
-				fueling value creation through data.<br>
+				<p class="reveal-text">I'm Matti Laine, an experienced data and platform engineer with an analytical, business-oriented mindset. <br>
+				I'm passionate about exploring new technologies and approaches, utilizing AI and agentic workflows, with a focus on
+				value creation through data.<br><br>
 
 				I currently work as Principal Data Engineer at <a href="https://www.renessai.com" style="text-decoration: none; border-bottom: none;">Renessai</a>.</p>
 			</div>
@@ -263,14 +357,12 @@
 			</span>
 			<div class="content">
 				<header class="major">
-					<h2>Stuff I like to do</h2>
+					<h2 class="reveal-header">Stuff I like to do</h2>
 				</header>
-				<p>I like to work from architecture and design to infrastructure and implementation,
+				<p class="reveal-text">I like to work from architecture and design to infrastructure and implementation,
 				but data and platform engineering are the things that bind it all together.
-				I'm aiming for a holistic view to find the intersection of scalability, reliability, and maintainability <br>
-				— by embracing simplicity over complexity.
 				</p>
-				<ul class="icons-grid">
+				<ul class="icons-grid reveal-text">
 					<li>
 						<div class="flip-card-inner">
 							<div class="flip-card-front">
@@ -336,9 +428,9 @@
 			</span>
 			<div class="content">
 				<header class="major">
-					<h2>Coffee time?</h2>
+					<h2 class="reveal-header">Coffee time?</h2>
 				</header>
-				<p> I'm also a fan of quality coffee and espresso based beverages.
+				<p class="reveal-text"> I'm also a fan of quality coffee and espresso based beverages.
 					I'm currently brewing with <a href="https://www.lelit.com/product/marax-pl62x/" target="_blank" style="text-decoration: none; border-bottom: none;">Lelit MaraX</a>, and chasing the perfect
 					shot of espresso ☕️</p>
 			</div>
@@ -350,14 +442,27 @@
 	<section id="footer">
 		<div class="container">
 			<header class="major">
-				<h2>Get in touch</h2>
+				<h2 class="reveal-header">Get in touch</h2>
 			</header>
-			<p>Want to connect or collaborate? <br>
+			<p class="reveal-text">Want to connect or collaborate? <br>
 			Hit the button below and come say hi on my GitHub. <br><br>
 			For professional inquiries, find me on <a href="https://fi.linkedin.com/in/mattilaine" target="_blank" style="text-decoration: none; border-bottom: none;">LinkedIn</a>.</p>
 			<ul class="actions special">
 				<li>
-					<div class="glow-wrap"><a href="https://github.com/mattilaine/mattilaine.github.io/discussions/5" target="_blank" class="button primary">Send Message</a></div>
+					<div class="glow-wrap">
+					<a href="https://github.com/mattilaine/mattilaine.github.io/discussions/5" target="_blank" class="button x">
+						<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#7e7e7e">
+							<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+							<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+							<g id="SVGRepo_iconCarrier">
+								<title>github</title>
+								<rect width="24" height="24" fill="none"></rect>
+								<path d="M12,2A10,10,0,0,0,8.84,21.5c.5.08.66-.23.66-.5V19.31C6.73,19.91,6.14,18,6.14,18A2.69,2.69,0,0,0,5,16.5c-.91-.62.07-.6.07-.6a2.1,2.1,0,0,1,1.53,1,2.15,2.15,0,0,0,2.91.83,2.16,2.16,0,0,1,.63-1.34C8,16.17,5.62,15.31,5.62,11.5a3.87,3.87,0,0,1,1-2.71,3.58,3.58,0,0,1,.1-2.64s.84-.27,2.75,1a9.63,9.63,0,0,1,5,0c1.91-1.29,2.75-1,2.75-1a3.58,3.58,0,0,1,.1,2.64,3.87,3.87,0,0,1,1,2.71c0,3.82-2.34,4.66-4.57,4.91a2.39,2.39,0,0,1,.69,1.85V21c0,.27.16.59.67.5A10,10,0,0,0,12,2Z"></path>
+							</g>
+						</svg>
+						Say hi on GitHub
+					</a>
+					</div>
 				</li>
 			</ul>
 		</div>
@@ -370,6 +475,15 @@
 	</section>
 
 
+	<script>
+		const observer = new IntersectionObserver((entries) => {
+			entries.forEach(entry => {
+				entry.target.classList.toggle('visible', entry.isIntersecting);
+			});
+		}, { threshold: 0.15 });
+
+		document.querySelectorAll('.reveal-header, .reveal-text').forEach(el => observer.observe(el));
+	</script>
 </body>
 
 </html>

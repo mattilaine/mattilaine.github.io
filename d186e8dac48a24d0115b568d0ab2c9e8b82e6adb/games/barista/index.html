@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Barista Simulator</title>
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/stations.css" />
+  <link rel="stylesheet" href="styles/animations.css" />
+  <style>
+    /* Return-to-gaming-center link — fixed to the viewport, above the scaled stage */
+    #gaming-center-link {
+      position: fixed;
+      bottom: 0.75rem;
+      left: 0.75rem;
+      z-index: 1000;
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+      padding: 0.35rem 0.8rem;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    #gaming-center-link:hover {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.7);
+      background: rgba(0, 0, 0, 0.65);
+    }
+  </style>
+</head>
+<body>
+  <!-- Return to the konami-code gaming center (lives outside the scaled stage) -->
+  <a id="gaming-center-link" href="../../index.html?gaming=1" aria-label="Return to gaming center">← GAMING CENTER</a>
+
+  <!-- Everything lives inside a fixed-size stage that is scaled to fit the viewport. -->
+  <div id="viewport">
+    <div id="stage">
+
+      <!-- Top HUD: shift progress + running score -->
+      <header id="hud">
+        <div class="hud-left">
+          <span class="hud-label">Customer</span>
+          <span id="hud-customer">0 / 0</span>
+        </div>
+        <div class="hud-title">☕ Barista Simulator</div>
+        <div class="hud-right">
+          <div class="hud-score-block">
+            <span class="hud-label">Score</span>
+            <span id="hud-score">0</span>
+          </div>
+          <button id="theme-btn" class="theme-btn" type="button" aria-label="Switch to day mode">🌙</button>
+          <button id="mute-btn" class="mute-btn" type="button" aria-label="Toggle sound">🔊</button>
+        </div>
+      </header>
+
+      <!-- Customer / order window (top of the POV) -->
+      <section id="customer-window">
+        <div id="customer-avatar" class="customer-avatar"></div>
+        <div id="order-ticket" class="order-ticket hidden">
+          <div class="ticket-pin"></div>
+          <div class="ticket-name">—</div>
+          <div class="ticket-drink">Waiting…</div>
+          <ul class="ticket-recipe"></ul>
+        </div>
+        <div id="cw-panel" class="cw-panel"></div>
+      </section>
+
+      <!-- The counter: all stations and tools live here -->
+      <main id="counter">
+
+        <!-- LEFT: grinder, portafilter dock, tamper -->
+        <div id="station-grinder" class="station" data-zone="grinder">
+          <div class="station-label">Grinder</div>
+          <div class="grinder-body">
+            <div class="grinder-handle"></div>
+            <div class="grinder-hopper"></div>
+            <div class="grinder-unit">
+              <div class="grinder-dial"></div>
+              <div class="grinder-window"><div class="grinder-grounds"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="dock-portafilter" class="dock"></div>
+
+        <div id="tool-tamper" class="tool tamper" data-tool="tamper" data-home="tamper">
+          <div class="tamper-handle"></div>
+          <div class="tamper-base"></div>
+        </div>
+
+        <!-- CENTER: the espresso machine — group head, prep spot, lever, and the
+             integrated steam wand + hot-water wand (retro pop-art styling) -->
+        <div id="station-machine" class="station">
+          <div class="station-label">Espresso Machine</div>
+          <div class="machine-body">
+            <div class="machine-base"></div>
+            <div class="machine-housing"></div>
+            <div class="machine-cap"></div>
+            <!-- brown control panel: knobs, center pressure gauge, buttons -->
+            <div class="machine-panel">
+              <div class="m-knobs"><i class="mk"></i><i class="mk"></i></div>
+              <div class="m-gauge"><span class="gauge-face"></span><span class="gauge-needle"></span></div>
+              <div class="m-knobs"><i class="mk"></i><i class="mk"></i></div>
+              <div class="m-buttons"><i class="mb b1"></i><i class="mb b2"></i><i class="mb b3"></i></div>
+            </div>
+
+            <!-- integrated hot-water wand (left of the group head) -->
+            <div id="station-water" class="m-wand water-side">
+              <div class="wand-arm"></div>
+              <div class="water-tap" id="zone-water" data-zone="water"><div class="water-spout"></div></div>
+              <div class="wand-label">Hot Water</div>
+            </div>
+
+            <!-- integrated steam wand (right of the group head) -->
+            <div id="station-steam" class="m-wand steam-side">
+              <div class="wand-arm"></div>
+              <div class="steam-wand" id="zone-steam" data-zone="steam">
+                <div class="steam-pipe"></div>
+                <div class="steam-tip"></div>
+              </div>
+              <div class="wand-label">Steam</div>
+            </div>
+
+            <!-- manual dispense buttons, mounted on the housing inboard of each wand -->
+            <button id="btn-water" class="wand-btn" type="button" aria-label="Run hot water"></button>
+            <button id="btn-steam" class="wand-btn" type="button" aria-label="Run steam"></button>
+
+            <div class="machine-grouphead" id="zone-grouphead" data-zone="grouphead"></div>
+            <div class="machine-spouts" id="spouts"></div>
+            <button id="extract-lever" class="extract-lever" disabled>
+              <span class="lever-knob"></span>
+            </button>
+            <div class="machine-tray" id="zone-machine-spot" data-zone="machine-spot">
+              <div class="prep-hint">place cup</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: milk fridge, pitcher dock -->
+        <div id="station-fridge" class="station" data-zone="fridge">
+          <div class="station-label">Milk</div>
+          <svg class="milk-svg" viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="#1b1b1b" stroke-width="4" stroke-linejoin="round">
+              <path d="M24 46 L24 30 L60 14 L96 30 L96 46 Z" fill="#ffffff"/>
+              <rect x="24" y="44" width="72" height="100" rx="6" fill="#ffffff"/>
+            </g>
+            <path d="M24 30 L96 30" stroke="#1b1b1b" stroke-width="3"/>
+            <path d="M60 14 L60 30" stroke="#1b1b1b" stroke-width="2.5"/>
+            <g fill="#1b1b1b">
+              <ellipse cx="86" cy="56" rx="8" ry="6.5"/>
+              <ellipse cx="32" cy="120" rx="9" ry="6.5"/>
+              <ellipse cx="92" cy="120" rx="6" ry="7"/>
+              <ellipse cx="30" cy="96" rx="6" ry="7"/>
+            </g>
+            <rect x="30" y="50" width="22" height="14" rx="2" fill="#7ec8f0" stroke="#1b1b1b" stroke-width="2"/>
+            <path d="M30 60 q6 -8 11 -2 q5 -6 11 0 v4 h-22 Z" fill="#5bbf6a"/>
+            <text x="60" y="86" text-anchor="middle" font-family="'Trebuchet MS', sans-serif" font-size="20" font-weight="900" fill="#2aa3e0">MILK</text>
+            <text x="60" y="130" text-anchor="middle" font-size="34">🐮</text>
+          </svg>
+        </div>
+
+        <div id="dock-pitcher" class="dock"></div>
+
+        <!-- BOTTOM LEFT: cup stack -->
+        <div id="station-cups" class="station" data-zone="cups">
+          <div class="station-label">Cups</div>
+          <div class="cup-stack"></div>
+        </div>
+
+        <!-- BOTTOM RIGHT: serve hatch -->
+        <div id="station-serve" class="station" data-zone="serve">
+          <div class="station-label">Serve</div>
+          <div class="serve-tray"></div>
+        </div>
+
+      </main>
+
+      <!-- decorative recessed cup wells along the counter front -->
+      <div id="cup-wells"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+      <!-- Floating hint bar -->
+      <div id="hint-bar"></div>
+
+      <!-- Feedback overlay (per-drink score) -->
+      <div id="feedback-overlay" class="overlay hidden"></div>
+
+      <!-- Start / shift-end overlay (unused now; flow happens in the customer window) -->
+      <div id="screen-overlay" class="overlay hidden"></div>
+
+    </div>
+  </div>
+
+  <!-- Classic scripts loaded in dependency order so the game also runs from file:// -->
+  <script src="src/state.js"></script>
+  <script src="src/dragController.js"></script>
+  <script src="src/effects.js"></script>
+  <script src="src/audio.js"></script>
+  <script src="src/recipes.js"></script>
+  <script src="src/orders.js"></script>
+  <script src="src/scoring.js"></script>
+  <script src="src/latteArt.js"></script>
+  <script src="src/tools/portafilter.js"></script>
+  <script src="src/tools/milkPitcher.js"></script>
+  <script src="src/tools/cup.js"></script>
+  <script src="src/tools/tamper.js"></script>
+  <script src="src/stations/grinder.js"></script>
+  <script src="src/stations/espressoMachine.js"></script>
+  <script src="src/stations/steamWand.js"></script>
+  <script src="src/stations/waterTap.js"></script>
+  <script src="src/stations/counter.js"></script>
+  <script src="src/ui/hud.js"></script>
+  <script src="src/ui/orderTicket.js"></script>
+  <script src="src/ui/feedback.js"></script>
+  <script src="src/ui/theme.js"></script>
+  <script src="src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,507 @@
+/* ===================================================================
+   Station positions inside #counter (1280 x ~588) and equipment art.
+   All flat-vector: CSS shapes + a little inline SVG.
+=================================================================== */
+
+/* ---- Grinder (cartoon flat) ---- */
+#station-grinder { left: 40px; top: 26px; width: 130px; height: 178px; }
+.grinder-body { position: absolute; inset: 0; }
+
+/* wire handle loop on top */
+.grinder-handle {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 66px; height: 24px;
+  border: 4px solid #23272c; border-bottom: none;
+  border-radius: 16px 16px 0 0;
+}
+
+/* glass hopper full of beans */
+.grinder-hopper {
+  position: absolute; top: 14px; left: 28px;
+  width: 74px; height: 56px;
+  background:
+    repeating-radial-gradient(circle at 42% 40%, #714a29 0 4px, #4f3018 4px 7px),
+    linear-gradient(#c39c6f, #9c7b54);
+  border: 4px solid #23272c;
+  border-radius: 14px 14px 8px 8px;
+}
+.grinder-hopper::after { /* glass shine */
+  content: ""; position: absolute; top: 6px; left: 8px; width: 11px; height: 28px;
+  background: rgba(255,255,255,.45); border-radius: 8px;
+}
+
+/* charcoal grinder unit */
+.grinder-unit {
+  position: absolute; top: 62px; left: 12px;
+  width: 106px; height: 112px;
+  background: linear-gradient(#3c4147, #2a2e33);
+  border: 4px solid #181b1f; border-radius: 12px;
+}
+
+/* round dial with a coffee-bean icon */
+.grinder-dial {
+  position: absolute; top: 9px; left: 50%; transform: translateX(-50%);
+  width: 30px; height: 30px; border-radius: 50%;
+  background: #f1ece1; border: 4px solid #181b1f;
+}
+.grinder-dial::after { /* bean body */
+  content: ""; position: absolute; left: 50%; top: 50%;
+  width: 13px; height: 17px; border-radius: 50%;
+  background: #6e4727; transform: translate(-50%, -50%) rotate(-20deg);
+}
+.grinder-dial::before { /* bean crease */
+  content: ""; position: absolute; left: 50%; top: 50%; z-index: 1;
+  width: 2px; height: 15px; border-radius: 2px;
+  background: #3a2412; transform: translate(-50%, -50%) rotate(-20deg);
+}
+
+/* window showing the ground coffee */
+.grinder-window {
+  position: absolute; bottom: 9px; left: 50%; transform: translateX(-50%);
+  width: 84px; height: 46px;
+  background: #ece5d7; border: 4px solid #181b1f; border-radius: 6px;
+  overflow: hidden;
+}
+.grinder-grounds {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 22px;
+  background: radial-gradient(60% 120% at 50% 100%, #5a3a22, #3a2412);
+  border-radius: 50% 50% 0 0 / 80% 80% 0 0;
+}
+#station-grinder.grinding .grinder-grounds { animation: shake .12s linear infinite; }
+
+/* ---- Portafilter dock + tool ---- */
+#dock-portafilter { left: 60px; top: 260px; width: 96px; height: 30px; }
+.dock {
+  position: absolute;
+  border: 2px dashed rgba(255,255,255,.25);
+  border-radius: 8px;
+  z-index: 11;
+}
+.dock::after {
+  content: attr(data-hint);
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: 1px;
+}
+
+/* Portafilter: round basket + handle */
+.portafilter {
+  width: 150px; height: 46px;
+}
+.portafilter .pf-basket {
+  position: absolute; left: 0; top: 0;
+  width: 56px; height: 46px;
+  background: linear-gradient(#dfe3ea, #aab0bb);
+  border-radius: 12px 12px 44% 44%;     /* cup: flat-ish metal rim, rounded bottom */
+  box-shadow: inset 0 -6px 0 rgba(0,0,0,.15), inset 0 5px 0 rgba(255,255,255,.30);
+  /* no overflow:hidden — fresh grounds heap up above the rim */
+}
+.portafilter .pf-grounds {
+  /* bottom-anchored so the grounds grow UP out of the basket as they're ground in,
+     heaping into a little mountain whose peak sits well proud of the rim */
+  position: absolute; left: 6px; right: 6px; bottom: 7px;
+  height: 0;
+  /* radial shading reads as a rounded 3-D heap of grounds */
+  background: radial-gradient(70% 90% at 50% 38%, #5e3d23, var(--espresso) 72%);
+  border-radius: 50% 50% 14% 14% / 96% 96% 16% 16%;
+  transition: height .22s ease, border-radius .22s ease, left .22s ease, right .22s ease;
+  z-index: 1;
+}
+.portafilter.tamped .pf-grounds {
+  /* tamping presses the mountain straight down into a level puck that sits
+     nestled inside the basket walls, its flat top just below the rim */
+  left: 8px; right: 8px; bottom: 8px;
+  background: linear-gradient(#4a3019, #2e1c10);
+  box-shadow: inset 0 3px 0 rgba(255,255,255,.10), inset 0 -3px 4px rgba(0,0,0,.35);
+  /* rounded bottom follows the basket's curve so it doesn't poke past the edge */
+  border-radius: 7px 7px 40% 40% / 9px 9px 62% 62%;
+}
+.portafilter .pf-spout {
+  position: absolute; left: 18px; top: 44px;
+  width: 18px; height: 12px;
+  background: var(--steel-dark); border-radius: 0 0 4px 4px;
+}
+.portafilter .pf-handle {
+  position: absolute; left: 50px; top: 14px;
+  width: 100px; height: 18px;
+  background: linear-gradient(#241812, #120b07);
+  border-radius: 9px;
+  box-shadow: inset 0 2px 0 rgba(255,255,255,.12);
+}
+
+/* ---- Tamper ---- */
+#tool-tamper.tamper { left: 210px; top: 254px; width: 46px; height: 64px; }
+.tamper-handle {
+  position: absolute; top: 0; left: 11px;
+  width: 24px; height: 34px;
+  background: linear-gradient(#3b2417, #1c120a);
+  border-radius: 10px 10px 4px 4px;
+}
+.tamper-base {
+  position: absolute; top: 32px; left: 3px;
+  width: 40px; height: 18px;
+  background: linear-gradient(#c9ced6, #8b929c);
+  border-radius: 4px;
+}
+
+/* ============================================================
+   Espresso machine — retro pop-art unit with the steam wand and
+   hot-water wand built in. Thick dark outlines, flat fills.
+   ============================================================ */
+#station-machine { left: 372px; top: 24px; width: 536px; height: 432px; }
+.machine-body { position: absolute; inset: 0; }
+:root { --outline: #1c150f; }
+
+/* brown base with chrome drip-grate */
+.machine-base {
+  position: absolute; top: 300px; left: 0; right: 0; height: 128px;
+  background: linear-gradient(#7c4a28, #5a3417);
+  border: 4px solid var(--outline); border-radius: 12px;
+}
+.machine-base::before {
+  content: ""; position: absolute; top: 8px; left: 16px; right: 16px; height: 22px;
+  background: repeating-linear-gradient(90deg, #aab0bb 0 5px, #7e858f 5px 7px);
+  border: 3px solid var(--outline); border-radius: 5px;
+}
+
+/* charcoal main housing */
+.machine-housing {
+  position: absolute; top: 120px; left: 12px; right: 12px; height: 198px;
+  background: linear-gradient(#5b626d, #434a53);
+  border: 4px solid var(--outline); border-radius: 12px;
+  box-shadow: inset 0 6px 0 rgba(255,255,255,.10), inset 0 -12px 0 rgba(0,0,0,.20);
+}
+
+/* chrome cap above the control panel */
+.machine-cap {
+  position: absolute; top: 0; left: 22px; right: 22px; height: 22px;
+  background: linear-gradient(#eef1f5, #b9c0ca);
+  border: 4px solid var(--outline); border-bottom: none;
+  border-radius: 12px 12px 0 0;
+}
+
+/* brown control panel: knobs | gauge | knobs, with buttons under the gauge */
+.machine-panel {
+  position: absolute; top: 16px; left: 30px; right: 30px; height: 108px;
+  background: linear-gradient(#7c4a28, #5f3719);
+  border: 4px solid var(--outline); border-radius: 8px;
+  box-shadow: inset 0 4px 0 rgba(255,255,255,.12), inset 0 -8px 0 rgba(0,0,0,.25);
+  display: flex; align-items: center; justify-content: center; gap: 26px;
+  pointer-events: none;
+}
+.m-gauge {
+  position: relative; width: 60px; height: 60px; border-radius: 50%;
+  background: radial-gradient(circle at 50% 42%, #fff 58%, #ece3d3 100%);
+  border: 5px solid var(--outline); box-shadow: 0 0 0 3px #cbd0d8;
+}
+.m-gauge .gauge-face {
+  position: absolute; inset: 7px; border-radius: 50%;
+  background: repeating-conic-gradient(from 200deg, var(--outline) 0 1.5deg, transparent 1.5deg 18deg);
+  -webkit-mask: radial-gradient(circle, transparent 52%, #000 54%);
+          mask: radial-gradient(circle, transparent 52%, #000 54%);
+  opacity: .55;
+}
+.m-gauge .gauge-needle {
+  position: absolute; left: 50%; top: 50%; width: 3px; height: 24px;
+  background: #c0392b; transform-origin: bottom center;
+  transform: translate(-50%, -100%) rotate(-58deg); border-radius: 2px;
+  transition: transform .25s ease-out;   /* smooths the pressure sweep + fall-back */
+}
+.m-gauge::after { content: ""; position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; background: var(--outline); border-radius: 50%; transform: translate(-50%, -50%); }
+
+.m-knobs { display: flex; gap: 12px; }
+.mk {
+  position: relative; width: 26px; height: 26px; border-radius: 50%;
+  background: radial-gradient(circle at 40% 32%, #565c65, #14171b);
+  border: 3px solid var(--outline);
+}
+.mk::after { content: ""; position: absolute; left: 50%; top: 3px; width: 3px; height: 9px; background: #cbd0d8; transform: translateX(-50%); border-radius: 2px; }
+
+.m-buttons { position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); display: flex; gap: 16px; }
+.mb { width: 17px; height: 17px; border-radius: 50%; border: 3px solid var(--outline); }
+.mb.b1 { background: #2f7fd0; }
+.mb.b2 { background: #e2542a; }
+.mb.b3 { background: #2f9d4c; }
+
+/* group head + locked portafilter mount */
+.machine-grouphead {
+  /* left is explicit (not 50%+translate) so offset-based positioning helpers
+     measure the true x — they walk offsetLeft and ignore CSS transforms. */
+  position: absolute; top: 138px; left: 209px;
+  width: 118px; height: 40px;
+  background: linear-gradient(#cdd3db, #8b929c);
+  border: 4px solid var(--outline); border-radius: 0 0 14px 14px;
+  z-index: 2;
+}
+.machine-grouphead::after {
+  content: ""; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+  width: 40px; height: 12px; background: #2b2f36; border-radius: 0 0 6px 6px;
+}
+.machine-grouphead.locked { box-shadow: 0 0 0 3px var(--teal); }
+
+.machine-spouts {
+  position: absolute; top: 188px; left: 254px;
+  width: 28px; height: 16px; background: #2b2f36; border-radius: 0 0 6px 6px; z-index: 2;
+}
+.machine-spouts::before, .machine-spouts::after {
+  content: ""; position: absolute; bottom: -10px; width: 5px; height: 12px; background: #2b2f36;
+}
+.machine-spouts::before { left: 6px; }
+.machine-spouts::after  { right: 6px; }
+
+/* extract lever (on the panel, right of the gauge) */
+.extract-lever {
+  position: absolute; top: 40px; right: 30px;
+  width: 28px; height: 64px;
+  background: linear-gradient(#cdd3db, #8b929c);
+  border: 4px solid var(--outline); border-radius: 16px;
+  cursor: pointer; padding: 0; z-index: 4;
+}
+.extract-lever:disabled { opacity: .5; cursor: not-allowed; }
+.extract-lever .lever-knob {
+  position: absolute; left: 50%; top: 4px; transform: translateX(-50%);
+  width: 18px; height: 18px; border-radius: 50%; background: var(--bad);
+  transition: top .2s ease, background .2s ease;
+}
+.extract-lever.on .lever-knob { top: 38px; background: var(--good); }
+
+/* drip tray / prep spot where the cup goes (in front of the base) */
+.machine-tray {
+  position: absolute; top: 224px; left: 184px;
+  width: 168px; height: 120px;
+  background: linear-gradient(#cdd3db, #aab0bb);
+  border: 4px solid var(--outline); border-radius: 8px;
+  display: flex; align-items: flex-end; justify-content: center; z-index: 2;
+}
+.machine-tray .prep-hint {
+  margin-bottom: 10px; font-size: 12px; color: #4a4f57; text-transform: uppercase; letter-spacing: 1px;
+}
+.machine-tray.has-cup .prep-hint { display: none; }
+
+/* ---- integrated wands (steam + hot water) ---- */
+.m-wand { position: absolute; width: 72px; height: 120px; z-index: 3; }
+.m-wand .wand-arm {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 12px; height: 54px;
+  background: linear-gradient(90deg, #eef1f5, #9aa1ab);
+  border: 3px solid var(--outline); border-radius: 6px;
+}
+.wand-label {
+  position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%);
+  font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;
+  color: #f3e3cf; text-shadow: 0 1px 2px rgba(0,0,0,.7); white-space: nowrap;
+}
+/* manual dispense buttons — round, glossy push-buttons like the machine's
+   own control buttons, mounted on the housing right beside each wand. */
+.wand-btn {
+  position: absolute; top: 150px;
+  width: 30px; height: 30px; padding: 0;
+  border: 3px solid var(--outline); border-radius: 50%;
+  cursor: pointer; z-index: 5; touch-action: none; user-select: none;
+  box-shadow: inset 0 2px 2px rgba(255,255,255,.55), inset 0 -3px 4px rgba(0,0,0,.35),
+              0 3px 4px rgba(0,0,0,.35);
+}
+#btn-water { left: 80px; background: radial-gradient(circle at 38% 30%, #74b8f2, #2f7fd0 68%, #1f5da0); }
+#btn-steam { right: 80px; background: radial-gradient(circle at 38% 30%, #f18b64, #e2542a 68%, #b23c18); }
+.wand-btn:active, .wand-btn.pressed {
+  transform: translateY(2px);
+  box-shadow: inset 0 2px 6px rgba(0,0,0,.55);
+}
+.m-wand.water-side { left: 26px; top: 126px; }
+.m-wand.steam-side { right: 26px; top: 126px; }
+
+/* the drop/hold targets sit at the wand tip.
+   left is explicit (not 50%+translate) so posInCounter — which walks offsetLeft
+   and ignores CSS transforms — measures the spout/tip at its true position. */
+.water-tap, .steam-wand {
+  position: absolute; top: 40px; left: 6px;
+  width: 60px; height: 76px;
+}
+.water-spout {
+  position: absolute; top: 0; left: 24px;
+  width: 12px; height: 52px;
+  background: linear-gradient(90deg, #eef1f5, #9aa1ab);
+  border: 3px solid var(--outline); border-radius: 0 0 8px 8px;
+}
+.steam-pipe {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 12px; height: 46px;
+  background: linear-gradient(90deg, #f3f6fa, #8b929c);
+  border: 3px solid var(--outline); border-radius: 0 0 6px 6px;
+}
+.steam-tip {
+  position: absolute; top: 44px; left: 23px;
+  width: 14px; height: 14px; background: #2b2f36;
+  border: 3px solid var(--outline); border-radius: 0 0 6px 6px;
+}
+
+/* ---- Milk carton (cartoon doodle) ---- */
+#station-fridge { left: 906px; top: 250px; width: 120px; height: 150px; }
+.milk-svg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  filter: drop-shadow(0 5px 5px rgba(0,0,0,.32));
+}
+
+/* ---- Milk frothing pitcher (cartoon stainless steel) ---- */
+#dock-pitcher { left: 1086px; top: 268px; width: 100px; height: 30px; }
+.milk-pitcher { width: 102px; height: 96px; }
+
+/* tapered body with a pointed spout, bold outline via layered drop-shadows */
+.pitcher-body {
+  position: absolute; left: 4px; top: 8px;
+  width: 72px; height: 84px;
+  background: linear-gradient(90deg,
+    #9aa1ab 0%, #c9ced6 15%, #ffffff 40%, #eef1f5 56%, #c4cad3 80%, #a3aab4 100%);
+  clip-path: polygon(0% 9%, 14% 1%, 26% 6%, 100% 4%, 90% 100%, 10% 100%, 4% 17%);
+  filter:
+    drop-shadow(2.5px 0 0 #41474d) drop-shadow(-2.5px 0 0 #41474d)
+    drop-shadow(0 2.5px 0 #41474d) drop-shadow(0 -2.5px 0 #41474d)
+    drop-shadow(1.8px 1.8px 0 #41474d) drop-shadow(-1.8px -1.8px 0 #41474d)
+    drop-shadow(0 6px 4px rgba(0,0,0,.32));
+}
+.pitcher-milk {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 0;
+  /* creamy whole milk with a faint vertical sheen */
+  background: linear-gradient(90deg, #efe7d7 0%, #fffdf8 42%, #f4ecdd 70%, #e7dcc8 100%);
+  transition: height .15s ease;
+}
+/* silky meniscus highlight riding on the milk surface */
+.pitcher-milk::after {
+  content: ""; position: absolute; top: -2px; left: 0; right: 0; height: 5px;
+  border-radius: 50%;
+  background: linear-gradient(rgba(255,255,255,.85), rgba(255,255,255,0));
+  opacity: .75;
+}
+/* steamed microfoam: a rounded creamy cap with soft bubbles + glossy sheen */
+.pitcher-milk.foamy::after {
+  top: -5px; height: 46%;
+  border-radius: 50% 50% 38% 38% / 34% 34% 100% 100%;
+  background:
+    radial-gradient(6px 5px at 22% 40%, rgba(255,255,255,.95), transparent 72%),
+    radial-gradient(5px 4px at 54% 30%, rgba(255,255,255,.9), transparent 72%),
+    radial-gradient(7px 6px at 78% 48%, rgba(255,255,255,.85), transparent 72%),
+    radial-gradient(4px 4px at 38% 58%, rgba(255,255,255,.8), transparent 72%),
+    radial-gradient(5px 4px at 66% 64%, rgba(255,255,255,.7), transparent 72%),
+    linear-gradient(#ffffff, #f5eee0);
+  box-shadow: inset 0 3px 5px rgba(255,255,255,.75), inset 0 -4px 6px rgba(208,193,170,.4);
+  opacity: .97;
+}
+/* vertical seam highlight down the front */
+.pitcher-body::after {
+  content: ""; position: absolute; left: 48%; top: 4%; width: 2px; height: 94%;
+  background: rgba(70,75,85,.16);
+}
+.pitcher-spout { display: none; }   /* spout is part of the body silhouette */
+
+/* invisible marker at the pour spout tip; the milk stream originates here so it
+   follows the real (tilted) spout position rather than the body centre */
+.pitcher-tip { position: absolute; left: 10px; top: 6px; width: 8px; height: 8px; pointer-events: none; }
+
+/* angular D-handle with its own bold outline */
+.pitcher-handle {
+  position: absolute; right: 0; top: 16px;
+  width: 26px; height: 52px;
+  border: 7px solid #c4cad3;
+  border-left: none;
+  border-radius: 2px 9px 9px 2px;
+  background: transparent;
+  filter:
+    drop-shadow(2px 0 0 #43494f) drop-shadow(-2px 0 0 #43494f)
+    drop-shadow(0 2px 0 #43494f) drop-shadow(0 -2px 0 #43494f);
+}
+
+/* ---- Cups ---- */
+#station-cups { left: 44px; top: 416px; width: 150px; height: 120px; }
+.cup-stack {
+  position: absolute; left: 0; bottom: 0;
+  width: 92px; height: 60px;
+  /* stack of dark café cups */
+  background: linear-gradient(#3a312a, #221c16);
+  border-radius: 6px 6px 12px 12px;
+  border: 2px solid #15110d;
+  box-shadow: 0 -8px 0 -2px #342c25, 0 -10px 0 -2px #15110d,
+              0 -16px 0 -4px #342c25, 0 -18px 0 -4px #15110d;
+}
+
+/* a cup tool (also used inside the tray) */
+.cup {
+  width: 92px; height: 86px;
+}
+.cup .cup-vessel {
+  position: absolute; left: 6px; top: 8px;
+  width: 72px; height: 70px;
+  background: linear-gradient(90deg, #ffffff, #ece3d3);
+  border-radius: 8px 8px 26px 26px;
+  border: 2px solid #ddd2bf;
+  overflow: hidden;
+}
+.cup .cup-liquid {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 0;
+  transition: height .2s ease, background .3s ease;
+}
+.cup .cup-canvas {
+  position: absolute; left: 0; top: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+.cup.art-active .cup-canvas { pointer-events: auto; cursor: crosshair; }
+.cup .cup-handle {
+  position: absolute; right: -14px; top: 24px;
+  width: 22px; height: 34px;
+  border: 6px solid #ddd2bf;
+  border-left: none;
+  border-radius: 0 14px 14px 0;
+}
+
+/* ---- Serve hatch ---- */
+#station-serve { left: 1066px; top: 420px; width: 150px; height: 120px; }
+.serve-tray {
+  position: absolute; left: 10px; bottom: 0;
+  width: 120px; height: 70px;
+  background: linear-gradient(#caa, #a98);
+  background: linear-gradient(#d8bfa6, #b89878);
+  border-radius: 10px;
+  border: 3px solid #9a7a5c;
+  box-shadow: inset 0 6px 0 rgba(255,255,255,.25);
+}
+.serve-tray::after {
+  content: "→"; position: absolute; top: -30px; left: 50%; transform: translateX(-50%);
+  font-size: 22px; color: #ffe9cf;
+}
+
+/* steam pitcher progress meter (texture) */
+#texture-meter {
+  position: absolute;
+  width: 16px; height: 110px;
+  background: rgba(0,0,0,.4);
+  border-radius: 8px;
+  z-index: 70;
+  overflow: hidden;
+  display: none;
+}
+#texture-meter.show { display: block; }
+#texture-meter .meter-fill {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 0; background: var(--milk);
+}
+#texture-meter .meter-target {
+  position: absolute; left: 0; right: 0;
+  border-top: 2px solid var(--good);
+  border-bottom: 2px solid var(--good);
+  background: rgba(76,175,80,.25);
+}
+
+/* ---- decorative recessed cup wells along the counter front ---- */
+#cup-wells {
+  position: absolute; left: 250px; bottom: 16px;
+  width: 780px; height: 40px;
+  display: flex; gap: 20px; justify-content: center; align-items: center;
+  pointer-events: none; z-index: 11;
+}
+#cup-wells i {
+  width: 56px; height: 30px; border-radius: 50%;
+  background: radial-gradient(circle at 50% 38%, #15100c 0%, #2c241d 72%, #3a312a 100%);
+  box-shadow: inset 0 4px 6px rgba(0,0,0,.75), 0 1px 0 rgba(255,236,200,.14);
+}

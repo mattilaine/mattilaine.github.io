@@ -1,147 +1,382 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
 
 <head>
-    <title></title>
-
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Enter password</title>
+    <link rel="icon" href="data:,">
 
-</head>
+    <style>
+        :root {
+            --bg-color: #0d0d0d;
+            --primary-color: #00f2ea;
+            --secondary-color: #a855f7;
+            --text-color: #e5e5e5;
+            --font-family: "Fira Code", Consolas, "Courier New", Courier, monospace;
+            --glitch-anim-duration: 0.4s;
+        }
 
-<style>
-    body {
-        background-image: url('pswd_pg.jpg');
-        background-attachment: fixed;
-        color: #000000;
-        background-size: 100%;
-    }
+        * { box-sizing: border-box; }
 
-    .lightbox {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(76, 76, 123, 0.400);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url('pswd_pg.jpg');
+            background-image: image-set(
+                url('pswd_pg.webp') type('image/webp'),
+                url('pswd_pg.jpg') type('image/jpeg')
+            );
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            font-family: var(--font-family);
+        }
 
-    .input-container {
-        display: flex;
-        background: white;
-        border-radius: 1rem;
-        background: linear-gradient(135deg, #23272F 0%, #14161a 100%);
-        box-shadow: 10px 10px 20px #0e1013, -10px -10px 40px #383e4b;
-        padding: 0.3rem;
-        gap: 0.3rem;
-        width: 320px;
-    }
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(76, 76, 123, 0.4);
+        }
 
-    .input-container input {
-        border-radius: 0.8rem 0 0 0.8rem;
-        background: #23272F;
-        box-shadow: inset 5px 5px 10px #0e1013, inset -5px -5px 10px #383e4b, 0px 0px 100px rgba(255, 212, 59, 0), 0px 0px 100px rgba(255, 102, 0, 0);
-        width: 100%;
-        flex-basis: 75%;
-        padding: 1rem;
-        border: none;
-        border: 1px solid transparent;
-        color: white;
-        transition: all 0.2s ease-in-out;
-    }
-
-    .input-container input:focus {
-        border: 1px solid #3b9aff;
-        outline: none;
-        box-shadow: inset 0px 0px 10px rgba(66, 110, 243, 0.5), inset 0px 0px 10px rgba(59, 121, 255, 0.5), 0px 0px 100px rgba(59, 213, 255, 0.5), 0px 0px 100px rgba(0, 174, 255, 0.5);
-    }
-
-    .input-container button {
-        flex-basis: 25%;
-        padding: 1rem;
-        background: linear-gradient(135deg, rgba(221, 114, 233, 0.59) 0%, rgba(230, 0, 255, 0.59) 100%);
-        box-shadow: 0px 0px 1px rgba(66, 110, 243, 0.5), 0px 0px 1px rgba(230, 0, 255, 0.5);
-        font-weight: 900;
-        letter-spacing: 0.3rem;
-        text-transform: uppercase;
-        color: #23272F;
-        border: none;
-        width: 100%;
-        border-radius: 0 1rem 1rem 0;
-        transition: all 0.2s ease-in-out;
-        cursor: pointer;
-    }
-
-    .input-container button:hover {
-        background: linear-gradient(135deg, rgb(66, 110, 243) 50%, rgb(66, 110, 243) 100%);
-        box-shadow: 0px 0px 100px rgba(66, 110, 243, 0.5), 0px 0px 100px rgba(230, 0, 255, 0.5);
-    }
-
-    @media (max-width: 500px) {
-        .input-container {
+        #loginform {
+            display: flex;
             flex-direction: column;
-            width: 90vw;
+            align-items: center;
         }
 
-        .input-container input {
-            border-radius: 0.8rem;
+        /* --- Glitch Input Wrapper --- */
+        .glitch-input-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: var(--font-family);
+            font-size: 16px;
+            padding: 3rem 3rem 1.5rem;
         }
 
-        .input-container button {
-            padding: 1rem;
-            border-radius: 0.8rem;
+        .input-container {
+            position: relative;
+            width: 19rem;
         }
-    }
-</style>
+
+        .holo-input {
+            width: 100%;
+            height: 3.5rem;
+            background: rgba(13, 13, 13, 0.7);
+            border: none;
+            border-bottom: 2px solid #333;
+            outline: none;
+            padding: 0 1rem;
+            color: var(--primary-color);
+            font-family: inherit;
+            font-size: 1.1rem;
+            caret-color: var(--primary-color);
+            z-index: 10;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .input-label {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            color: var(--text-color);
+            opacity: 0.6;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 11;
+        }
+        .holo-input:focus + .input-label,
+        .holo-input:not(:placeholder-shown) + .input-label {
+            top: -1.5rem;
+            left: 0;
+            font-size: 0.8rem;
+            opacity: 1;
+            color: var(--primary-color);
+        }
+        .holo-input:focus + .input-label::before,
+        .holo-input:focus + .input-label::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #212121;
+        }
+        .holo-input:focus + .input-label::before {
+            color: var(--secondary-color);
+            animation: glitch-label var(--glitch-anim-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+        .holo-input:focus + .input-label::after {
+            color: var(--primary-color);
+            animation: glitch-label var(--glitch-anim-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both;
+        }
+
+        .input-border,
+        .input-scanline,
+        .input-glow,
+        .input-corners {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .input-border {
+            border: 1px solid rgba(0, 242, 234, 0.2);
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+        .corner {
+            position: absolute;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid var(--primary-color);
+            transition: all 0.3s ease;
+            opacity: 0.5;
+        }
+        .corner-tl { top: -0.3rem; left: -0.3rem; border-right: none; border-bottom: none; }
+        .corner-tr { top: -0.3rem; right: -0.3rem; border-left: none; border-bottom: none; }
+        .corner-bl { bottom: -0.3rem; left: -0.3rem; border-right: none; border-top: none; }
+        .corner-br { bottom: -0.3rem; right: -0.3rem; border-left: none; border-top: none; }
+
+        .input-glow {
+            background: radial-gradient(ellipse at center, rgba(0, 242, 234, 0.2) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .input-scanline {
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                transparent 0%,
+                rgba(0, 242, 234, 0.1) 48%,
+                rgba(0, 242, 234, 0.3) 50%,
+                rgba(0, 242, 234, 0.1) 52%,
+                transparent 100%
+            );
+            opacity: 0;
+        }
+
+        .input-data-stream {
+            position: absolute;
+            bottom: 2px;
+            left: 0;
+            width: 100%;
+            height: 0.3rem;
+            display: flex;
+            opacity: 0;
+            transition: opacity 0.3s ease 0.1s;
+        }
+        .stream-bar {
+            flex-grow: 1;
+            background-color: var(--primary-color);
+            transition: transform 0.2s, opacity 0.2s;
+            transform: scaleY(0);
+            transform-origin: bottom;
+        }
+
+        .holo-input:focus { border-color: transparent; }
+        .holo-input:focus ~ .input-border { opacity: 1; border-color: rgba(0, 242, 234, 0.5); }
+        .holo-input:focus ~ .input-corners .corner { width: 1.25rem; height: 1.25rem; border-width: 3px; opacity: 1; }
+        .holo-input:focus ~ .input-glow { opacity: 1; }
+        .holo-input:focus ~ .input-scanline { animation: scan-vertical 4s linear infinite; }
+        .holo-input:focus ~ .input-data-stream { opacity: 1; }
+        .holo-input:focus ~ .input-data-stream .stream-bar {
+            animation: data-pulse 2s infinite;
+            animation-delay: calc(var(--i) * 0.1s);
+        }
+
+        /* --- Enter Button --- */
+        .login-button {
+            width: 19rem;
+            padding: 0.85rem;
+            background: transparent;
+            border: 1px solid rgba(0, 242, 234, 0.4);
+            color: var(--primary-color);
+            font-family: var(--font-family);
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.3rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            clip-path: polygon(0.5rem 0%, 100% 0%, calc(100% - 0.5rem) 100%, 0% 100%);
+        }
+        .login-button:hover:not(:disabled) {
+            background: rgba(0, 242, 234, 0.1);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 20px rgba(0, 242, 234, 0.3), inset 0 0 20px rgba(0, 242, 234, 0.05);
+        }
+        .login-button:disabled {
+            cursor: progress;
+            opacity: 0.5;
+        }
+
+        /* --- Shake on wrong password --- */
+        #loginform.shake { animation: shake 0.4s ease-in-out; }
+
+        @media (prefers-reduced-motion: reduce) {
+            #loginform.shake { animation: none; }
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        @media (max-width: 500px) {
+            .glitch-input-wrapper { padding: 2rem 1rem 1.5rem; }
+            .input-container { width: calc(90vw - 2rem); }
+            .login-button { width: 90vw; }
+        }
+
+        /* --- Keyframes --- */
+        @keyframes glitch-label {
+            0%   { transform: translate(0); clip-path: inset(0 0 0 0); }
+            20%  { transform: translate(-0.2rem, 0.1rem); clip-path: inset(50% 0 20% 0); }
+            40%  { transform: translate(0.1rem, -0.1rem); clip-path: inset(20% 0 60% 0); }
+            60%  { transform: translate(-0.15rem, 0.1rem); clip-path: inset(80% 0 5% 0); }
+            80%  { transform: translate(0.15rem, -0.15rem); clip-path: inset(30% 0 45% 0); }
+            100% { transform: translate(0); clip-path: inset(0 0 0 0); }
+        }
+
+        @keyframes scan-vertical {
+            0%   { opacity: 0; transform: translateY(-100%); }
+            25%  { opacity: 0.5; }
+            75%  { opacity: 0.5; }
+            100% { opacity: 0; transform: translateY(100%); }
+        }
+
+        @keyframes data-pulse {
+            0%, 100% { transform: scaleY(0.2); opacity: 0.3; }
+            50%       { transform: scaleY(1); opacity: 0.8; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+    </style>
+</head>
 
 <body>
 
     <div id="loginbox" class="lightbox">
-        <div class="input-container">
-            <input id="password" type="password" placeholder="Password...">
-            <button id="loginbutton" class="button">Enter</button>
-        </div>
+        <form id="loginform" autocomplete="on">
+            <div class="glitch-input-wrapper">
+                <div class="input-container">
+                    <input type="password" id="password" name="password" class="holo-input"
+                        placeholder="" autocomplete="current-password" aria-describedby="status" required>
+                    <label for="password" class="input-label" data-text="Password">Password</label>
+                    <div class="input-border"></div>
+                    <div class="input-scanline"></div>
+                    <div class="input-glow"></div>
+                    <div class="input-data-stream">
+                        <div class="stream-bar" style="--i: 0;"></div>
+                        <div class="stream-bar" style="--i: 1;"></div>
+                        <div class="stream-bar" style="--i: 2;"></div>
+                        <div class="stream-bar" style="--i: 3;"></div>
+                        <div class="stream-bar" style="--i: 4;"></div>
+                        <div class="stream-bar" style="--i: 5;"></div>
+                        <div class="stream-bar" style="--i: 6;"></div>
+                        <div class="stream-bar" style="--i: 7;"></div>
+                        <div class="stream-bar" style="--i: 8;"></div>
+                        <div class="stream-bar" style="--i: 9;"></div>
+                    </div>
+                    <div class="input-corners">
+                        <div class="corner corner-tl"></div>
+                        <div class="corner corner-tr"></div>
+                        <div class="corner corner-bl"></div>
+                        <div class="corner corner-br"></div>
+                    </div>
+                </div>
+            </div>
+            <button id="loginbutton" class="login-button" type="submit">Enter</button>
+            <span id="status" class="visually-hidden" aria-live="polite"></span>
+        </form>
     </div>
 
-
-
-    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
-
-    <script type="text/javascript"
-        src="https://rawcdn.githack.com/chrisveness/crypto/7067ee62f18c76dd4a9d372a00e647205460b62b/sha1.js"></script>
-
-    <script type="text/javascript">
+    <script>
         "use strict";
 
-        function loadPage(pwd) {
-            var hash = Sha1.hash(pwd);
-            var url = hash + "/index.html";
+        const form = document.getElementById("loginform");
+        const input = document.getElementById("password");
+        const button = document.getElementById("loginbutton");
+        const status = document.getElementById("status");
 
-            $.ajax({
-                url: url,
-                dataType: "html",
-                success: function (data) {
-                    window.location = url;
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    parent.location.hash = hash;
-                    $("#password").attr("placeholder", "wrong password 😔");
-                    $("#password").val("");
-                }
-            });
+        async function sha1Hex(message) {
+            const bytes = new TextEncoder().encode(message);
+            const buffer = await crypto.subtle.digest("SHA-1", bytes);
+            return Array.from(new Uint8Array(buffer))
+                .map(b => b.toString(16).padStart(2, "0"))
+                .join("");
         }
 
-        $("#loginbutton").on("click", function () {
-            loadPage($("#password").val());
-        });
-        $("#password").keypress(function (e) {
-            if (e.which == 13) {
-                loadPage($("#password").val());
+        function setBusy(busy) {
+            button.disabled = busy;
+            button.textContent = busy ? "…" : "Enter";
+        }
+
+        function reject() {
+            setBusy(false);
+            input.value = "";
+            input.setAttribute("placeholder", "wrong password 🔒");
+            status.textContent = "Wrong password";
+            form.classList.remove("shake");
+            void form.offsetWidth;
+            form.classList.add("shake");
+            input.focus();
+        }
+
+        async function loadPage(pwd) {
+            if (!pwd) return;
+            setBusy(true);
+            status.textContent = "Checking…";
+            try {
+                const hash = await sha1Hex(pwd);
+                const url = hash + "/index.html";
+                const res = await fetch(url, { method: "GET" });
+                if (res.ok) {
+                    window.location = url;
+                } else {
+                    reject();
+                }
+            } catch (err) {
+                reject();
+            }
+        }
+
+        input.addEventListener("blur", function () {
+            if (!input.value) {
+                input.setAttribute("placeholder", "");
             }
         });
-        $("#password").focus();
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            loadPage(input.value);
+        });
+
+        input.focus();
     </script>
 
 </body>

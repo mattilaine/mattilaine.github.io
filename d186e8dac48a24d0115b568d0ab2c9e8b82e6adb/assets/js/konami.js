@@ -47,6 +47,7 @@
 
 		var games = [
 			{ num: '01', label: 'TETRIS', href: 'games/tetris.html' },
+			{ num: '02', label: 'BARISTA SIMULATOR', href: 'games/barista/index.html' },
 		];
 
 		games.forEach(function(g) {
