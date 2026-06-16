@@ -265,13 +265,19 @@
 			}
 		}
 
-		.reveal-header {
+		.reveal-header,
+		.reveal-text {
 			opacity: 0;
 			transform: translateY(24px);
 			transition: opacity 0.7s ease, transform 0.7s ease;
 		}
 
-		.reveal-header.visible {
+		.reveal-text {
+			transition-delay: 0.1s;
+		}
+
+		.reveal-header.visible,
+		.reveal-text.visible {
 			opacity: 1;
 			transform: translateY(0);
 		}
@@ -316,10 +322,9 @@
 				<header class="major">
 					<h2 class="reveal-header">Hey There</h2>
 				</header>
-				<p>I'm Matti Laine, an experienced data and platform engineer with an analytical, business-oriented mindset. <br><br>
-				I have built and delivered data platforms and data-driven solutions for several clients, for example in the energy,
-				finance, and retail sectors. I'm passionate about exploring new technologies and approaches with AI, with a focus on
-				fueling value creation through data.<br>
+				<p class="reveal-text">I'm Matti Laine, an experienced data and platform engineer with an analytical, business-oriented mindset. <br><br>
+				I'm passionate about exploring new technologies and approaches, utilizing AI and agentic workflows, with a focus on
+				value creation through data.<br><br>
 
 				I currently work as Principal Data Engineer at <a href="https://www.renessai.com" style="text-decoration: none; border-bottom: none;">Renessai</a>.</p>
 			</div>
@@ -340,12 +345,12 @@
 				<header class="major">
 					<h2 class="reveal-header">Stuff I like to do</h2>
 				</header>
-				<p>I like to work from architecture and design to infrastructure and implementation,
+				<p class="reveal-text">I like to work from architecture and design to infrastructure and implementation,
 				but data and platform engineering are the things that bind it all together.
 				I'm aiming for a holistic view to find the intersection of scalability, reliability, and maintainability <br>
 				— by embracing simplicity over complexity.
 				</p>
-				<ul class="icons-grid">
+				<ul class="icons-grid reveal-text">
 					<li>
 						<div class="flip-card-inner">
 							<div class="flip-card-front">
@@ -413,7 +418,7 @@
 				<header class="major">
 					<h2 class="reveal-header">Coffee time?</h2>
 				</header>
-				<p> I'm also a fan of quality coffee and espresso based beverages.
+				<p class="reveal-text"> I'm also a fan of quality coffee and espresso based beverages.
 					I'm currently brewing with <a href="https://www.lelit.com/product/marax-pl62x/" target="_blank" style="text-decoration: none; border-bottom: none;">Lelit MaraX</a>, and chasing the perfect
 					shot of espresso ☕️</p>
 			</div>
@@ -427,7 +432,7 @@
 			<header class="major">
 				<h2 class="reveal-header">Get in touch</h2>
 			</header>
-			<p>Want to connect or collaborate? <br>
+			<p class="reveal-text">Want to connect or collaborate? <br>
 			Hit the button below and come say hi on my GitHub. <br><br>
 			For professional inquiries, find me on <a href="https://fi.linkedin.com/in/mattilaine" target="_blank" style="text-decoration: none; border-bottom: none;">LinkedIn</a>.</p>
 			<ul class="actions special">
@@ -461,14 +466,11 @@
 	<script>
 		const observer = new IntersectionObserver((entries) => {
 			entries.forEach(entry => {
-				if (entry.isIntersecting) {
-					entry.target.classList.add('visible');
-					observer.unobserve(entry.target);
-				}
+				entry.target.classList.toggle('visible', entry.isIntersecting);
 			});
-		}, { threshold: 0.2 });
+		}, { threshold: 0.15 });
 
-		document.querySelectorAll('.reveal-header').forEach(el => observer.observe(el));
+		document.querySelectorAll('.reveal-header, .reveal-text').forEach(el => observer.observe(el));
 	</script>
 </body>
 
