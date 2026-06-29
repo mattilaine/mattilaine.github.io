@@ -2954,7 +2954,7 @@ input, select, textarea {
 
 		#header .container {
 			/* background: rgba(57, 57, 57, 0.95); */
-			background: rgba(30, 30, 30, 0.2);
+			background: rgba(30, 30, 30, 0.0);
 			bottom: 0;
 			left: 50%;
 			margin-left: -17.5em;
