@@ -5,6 +5,8 @@
 <html>
 
 <head>
+	<!-- Mark JS as available so scroll-reveal elements only hide when JS can reveal them -->
+	<script>document.documentElement.classList.add('js');</script>
 	<title>@mattilaine</title>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
@@ -279,8 +281,8 @@
 			font-family: "Handjet", sans-serif;
 		}
 
-		.reveal-header,
-		.reveal-text {
+		html.js .reveal-header,
+		html.js .reveal-text {
 			opacity: 0;
 			transform: translateY(24px);
 			transition: opacity 0.7s ease, transform 0.7s ease;
@@ -290,10 +292,117 @@
 			transition-delay: 0.1s;
 		}
 
-		.reveal-header.visible,
-		.reveal-text.visible {
+		html.js .reveal-header.visible,
+		html.js .reveal-text.visible {
 			opacity: 1;
 			transform: translateY(0);
+		}
+
+		/* ===== Liquid-glass content plates ===== */
+		.main .container.glass-plate,
+		#footer .container.glass-plate {
+			position: relative;
+			max-width: 800px;
+			margin-left: auto;
+			margin-right: auto;
+			border-radius: 22px;
+			background: rgba(22, 22, 26, 0.45);
+			-webkit-backdrop-filter: blur(16px) saturate(140%);
+			backdrop-filter: blur(16px) saturate(140%);
+			border: 1px solid rgba(255, 255, 255, 0.12);
+			box-shadow:
+				inset 0 1px 0 0 rgba(255, 255, 255, 0.18),
+				inset 0 0 0 1px rgba(255, 255, 255, 0.02),
+				0 24px 60px -20px rgba(0, 0, 0, 0.55);
+			overflow: hidden;
+		}
+
+		/* Soft specular sheen across the top edge of the plate */
+		.main .container.glass-plate::after,
+		#footer .container.glass-plate::after {
+			content: '';
+			position: absolute;
+			inset: 0;
+			border-radius: inherit;
+			pointer-events: none;
+			background: linear-gradient(180deg,
+					rgba(255, 255, 255, 0.10) 0%,
+					rgba(255, 255, 255, 0.02) 18%,
+					rgba(255, 255, 255, 0) 45%);
+			z-index: 0;
+		}
+
+		/* Keep every plate child above the sheen overlay (incl. the section
+		   image shown at mobile widths). .goto-next keeps its own absolute
+		   positioning — only its stacking order is lifted. */
+		.glass-plate>*:not(.goto-next) {
+			position: relative;
+			z-index: 1;
+		}
+
+		.glass-plate>.goto-next {
+			z-index: 1;
+			bottom: 1.75em;
+		}
+
+		/* ----- Entrance: rise + fade + blur-in (only when JS will reveal it) ----- */
+		html.js .glass-plate {
+			opacity: 0;
+			transform: translateY(40px) scale(0.985);
+			filter: blur(10px);
+			transition:
+				opacity 0.9s ease,
+				transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
+				filter 0.9s ease;
+		}
+
+		html.js .glass-plate.visible {
+			opacity: 1;
+			transform: none;
+			filter: blur(0);
+		}
+
+		/* After the entrance finishes, JS adds .settled to drop the filter
+		   entirely — a non-none filter would otherwise flatten the descendant
+		   3D flip cards in section #two and keep a compositing layer alive. */
+		html.js .glass-plate.settled {
+			filter: none;
+		}
+
+		/* ----- Fallback when backdrop-filter is unsupported ----- */
+		@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+
+			.main .container.glass-plate,
+			#footer .container.glass-plate {
+				background: rgba(20, 20, 24, 0.85);
+			}
+		}
+
+		/* ----- Smaller screens: lighter blur, tighter insets ----- */
+		@media (max-width: 736px) {
+
+			.main .container.glass-plate,
+			#footer .container.glass-plate {
+				margin-left: 1.25em;
+				margin-right: 1.25em;
+				border-radius: 18px;
+				-webkit-backdrop-filter: blur(12px) saturate(135%);
+				backdrop-filter: blur(12px) saturate(135%);
+			}
+		}
+
+		/* ----- Respect reduced-motion: show everything settled, no animation ----- */
+		@media (prefers-reduced-motion: reduce) {
+
+			html.js .glass-plate,
+			html.js .glass-plate.visible,
+			html.js .reveal-header,
+			html.js .reveal-text {
+				opacity: 1;
+				transform: none;
+				filter: none;
+				transition: none;
+			}
 		}
 	</style>
 </head>
@@ -325,7 +434,7 @@
 
 	<!-- One -->
 	<section id="one" class="main special">
-		<div class="container">
+		<div class="container glass-plate">
 			<span class="image fit primary">
 				<picture>
 					<source srcset="images/pic01.webp" type="image/webp" />
@@ -348,7 +457,7 @@
 
 	<!-- Two -->
 	<section id="two" class="main special">
-		<div class="container">
+		<div class="container glass-plate">
 			<span class="image fit primary">
 				<picture>
 					<source srcset="images/pic02.webp" type="image/webp" />
@@ -419,7 +528,7 @@
 
 	<!-- Three -->
 	<section id="three" class="main special">
-		<div class="container">
+		<div class="container glass-plate">
 			<span class="image fit primary">
 				<picture>
 					<source srcset="images/pic03.webp" type="image/webp" />
@@ -440,7 +549,7 @@
 
 	<!-- Footer -->
 	<section id="footer">
-		<div class="container">
+		<div class="container glass-plate">
 			<header class="major">
 				<h2 class="reveal-header">Get in touch</h2>
 			</header>
@@ -476,13 +585,22 @@
 
 
 	<script>
+		// Reveal each element once, then stop observing it. Full-height glass
+		// plates must not re-hide/re-animate when scrolled back past, and once a
+		// plate has settled we drop its blur filter (see .settled in the CSS).
 		const observer = new IntersectionObserver((entries) => {
 			entries.forEach(entry => {
-				entry.target.classList.toggle('visible', entry.isIntersecting);
+				if (!entry.isIntersecting) return;
+				const el = entry.target;
+				el.classList.add('visible');
+				observer.unobserve(el);
+				if (el.classList.contains('glass-plate')) {
+					setTimeout(() => el.classList.add('settled'), 1000);
+				}
 			});
 		}, { threshold: 0.15 });
 
-		document.querySelectorAll('.reveal-header, .reveal-text').forEach(el => observer.observe(el));
+		document.querySelectorAll('.reveal-header, .reveal-text, .glass-plate').forEach(el => observer.observe(el));
 	</script>
 </body>
 
