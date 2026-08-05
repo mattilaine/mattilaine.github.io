@@ -112,6 +112,10 @@
 			transform: translateX(-50%) translateY(0);
 		}
 
+		.name .cosmic.arrow span {
+			opacity: 0.4;
+		}
+
 		#header .major h1 {
 			border-right: 3px solid rgba(255, 255, 255, 0.75);
 			animation: cursor-blink 0.7s step-end infinite;
@@ -334,16 +338,10 @@
 		}
 
 		/* Keep every plate child above the sheen overlay (incl. the section
-		   image shown at mobile widths). .goto-next keeps its own absolute
-		   positioning — only its stacking order is lifted. */
-		.glass-plate>*:not(.goto-next) {
+		   image shown at mobile widths). */
+		.glass-plate>* {
 			position: relative;
 			z-index: 1;
-		}
-
-		.glass-plate>.goto-next {
-			z-index: 1;
-			bottom: 1.75em;
 		}
 
 		/* ----- Entrance: rise + fade + blur-in (only when JS will reveal it) ----- */
@@ -430,7 +428,7 @@
 			<ul class="actions special">
 					<li>
 						<div class="name">
-							<a href="#one" class="cosmic scrolly" style="--color: #23b1d8" data-text="⇣" data-label="Hit the button to scroll down">
+							<a href="#one" class="cosmic arrow scrolly" style="--color: #23b1d8" data-text="⇣" data-label="Hit the button to scroll down">
 								<span>⇣</span>
 							</a>
 						</div>
@@ -458,7 +456,11 @@
 
 				I currently work as Principal Data Engineer at <a href="https://www.renessai.com" style="text-decoration: none; border-bottom: none;">Renessai</a>.</p>
 			</div>
-			<a href="#two" class="goto-next scrolly">Next</a>
+			<div class="name">
+				<a href="#two" class="cosmic arrow scrolly" style="--color: #23b1d8" data-text="⇣" data-label="Next">
+					<span>⇣</span>
+				</a>
+			</div>
 		</div>
 	</section>
 
@@ -529,7 +531,11 @@
 					</li>
 				</ul>
 			</div>
-			<a href="#three" class="goto-next scrolly">Next</a>
+			<div class="name">
+				<a href="#three" class="cosmic arrow scrolly" style="--color: #23b1d8" data-text="⇣" data-label="Next">
+					<span>⇣</span>
+				</a>
+			</div>
 		</div>
 	</section>
 
@@ -550,7 +556,11 @@
 					I'm currently brewing with <a href="https://www.lelit.com/product/marax-pl62x/" target="_blank" style="text-decoration: none; border-bottom: none;">Lelit MaraX</a>, and chasing the perfect
 					shot of espresso ☕️</p>
 			</div>
-			<a href="#footer" class="goto-next scrolly">Next</a>
+			<div class="name">
+				<a href="#footer" class="cosmic arrow scrolly" style="--color: #23b1d8" data-text="⇣" data-label="Next">
+					<span>⇣</span>
+				</a>
+			</div>
 		</div>
 	</section>
 
