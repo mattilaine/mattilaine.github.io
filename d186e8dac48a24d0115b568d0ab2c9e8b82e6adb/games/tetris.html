@@ -108,20 +108,20 @@
     [[[0,2],[1,0],[1,1],[1,2]],[[0,1],[1,1],[2,1],[2,2]],[[1,0],[1,1],[1,2],[2,0]],[[0,0],[0,1],[1,1],[2,1]]],
   ];
 
-  // SRS wall-kick offsets for J/L/S/T/Z: [from_rotation] → [[dr,dc], ...]
-  const KICKS = [
-    [[ 0, 0],[ 0,-1],[ 1,-1],[-2, 0],[-2,-1]],
-    [[ 0, 0],[ 0, 1],[-1, 1],[ 2, 0],[ 2, 1]],
-    [[ 0, 0],[ 0, 1],[ 1, 1],[-2, 0],[-2, 1]],
-    [[ 0, 0],[ 0,-1],[-1,-1],[ 2, 0],[ 2,-1]],
-  ];
-  // SRS wall-kick offsets for I piece
-  const KICKS_I = [
-    [[ 0, 0],[ 0,-2],[ 0, 1],[ 1,-2],[-2, 1]],
-    [[ 0, 0],[ 0,-1],[ 0, 2],[-2,-1],[ 1, 2]],
-    [[ 0, 0],[ 0, 2],[ 0,-1],[-1, 2],[ 2,-1]],
-    [[ 0, 0],[ 0, 1],[ 0,-2],[ 2, 1],[-1,-2]],
-  ];
+  // SRS wall kicks. Spec is per-transition (8 of them), and CW/CCW differ — so these
+  // are indexed [from_rotation][0=CW, 1=CCW]. Offsets are [dr,dc] with dr down-positive,
+  // i.e. the spec's (x,y) with y negated. Rotation states: 0, R=1, 2, L=3.
+  const JL = [[ 0, 0],[ 0,-1],[-1,-1],[ 2, 0],[ 2,-1]]; // 0→R, 2→R
+  const JR = [[ 0, 0],[ 0, 1],[ 1, 1],[-2, 0],[-2, 1]]; // R→0, R→2
+  const JU = [[ 0, 0],[ 0, 1],[-1, 1],[ 2, 0],[ 2, 1]]; // 0→L, 2→L
+  const JD = [[ 0, 0],[ 0,-1],[ 1,-1],[-2, 0],[-2,-1]]; // L→0, L→2
+  const KICKS = [[JL, JU], [JR, JR], [JU, JL], [JD, JD]];
+
+  const IA = [[ 0, 0],[ 0,-2],[ 0, 1],[ 1,-2],[-2, 1]]; // 0→R, L→2
+  const IB = [[ 0, 0],[ 0, 1],[ 0,-2],[ 2, 1],[-1,-2]]; // 2→R, L→0
+  const IC = [[ 0, 0],[ 0, 2],[ 0,-1],[-1, 2],[ 2,-1]]; // R→0, 2→L
+  const ID = [[ 0, 0],[ 0,-1],[ 0, 2],[-2,-1],[ 1, 2]]; // R→2, 0→L
+  const KICKS_I = [[IA, ID], [ID, IC], [IC, IB], [IB, IA]];
 
   // ── State ────────────────────────────────────────────────────
   function createState() {
@@ -159,7 +159,7 @@
     const nextRot = (p.rotation + (dir === 1 ? 1 : 3)) % 4;
     const cand    = { ...p, rotation: nextRot };
     const kicks   = p.type === 1 ? KICKS_I : KICKS;
-    const set     = kicks[p.rotation];
+    const set     = kicks[p.rotation][dir === 1 ? 0 : 1];
 
     for (const [dr, dc] of set) {
       const kicked = { ...cand, row: cand.row + dr, col: cand.col + dc };
@@ -188,7 +188,8 @@
 
   function applyLineClear(state) {
     const full = state.flashRows;
-    full.slice().reverse().forEach(r => {
+    // Ascending: splice+unshift only shifts rows ABOVE r, so later (larger) indices stay valid.
+    full.forEach(r => {
       state.board.splice(r, 1);
       state.board.unshift(new Array(COLS).fill(0));
     });
@@ -425,6 +426,7 @@
         if (state.flashTimer === 0) {
           applyLineClear(state);
           spawnNext(state);
+          lastTick = now; // don't bill the flash time against the new piece's gravity
         }
         render(state);
         return;
